@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            type="com.nepu.playtogether.PwdActivity"
+            name="data"/>
+    </data>
+
+    <androidx.percentlayout.widget.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".PwdActivity"
+        android:background="@drawable/login_bg">
+
+        <androidx.percentlayout.widget.PercentRelativeLayout
+            android:layout_height="0dp"
+            app:layout_heightPercent="72%"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true">
+
+            <LinearLayout
+                android:layout_height="0dp"
+                android:layout_marginTop="70dp"
+                android:layout_width="0dp"
+                android:layout_centerHorizontal="true"
+                app:layout_widthPercent="80%"
+                app:layout_heightPercent="80%"
+                android:layout_below="@id/login_group"
+                android:orientation="vertical">
+
+                <androidx.percentlayout.widget.PercentRelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:context="fragment.RegistFragment">
+
+                    <LinearLayout
+                        android:layout_height="0dp"
+                        app:layout_heightPercent="85%"
+                        android:id="@+id/login_panel"
+                        android:layout_width="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/corn_button"
+                        android:orientation="vertical">
+
+                        <EditText
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_margin="30dp"
+                            android:text="@={data.mViewModel.REmail}"
+                            android:drawableLeft="@drawable/ic_email_black_24dp"
+                            android:hint="请输入邮箱"
+                            android:textSize="16sp"
+                            android:singleLine="true"
+                            android:inputType="textEmailAddress"
+                            android:textColor="#000"
+                            android:background="#fff"
+                            android:textColorHint="@color/light_gray" />
+
+                        <TextView
+                            android:layout_height="1dp"
+                            android:layout_width="match_parent"
+                            android:background="#F4F4F4" />
+
+                        <EditText
+                            android:layout_margin="30dp"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_gravity="center"
+                            android:text="@={data.mViewModel.RPwd}"
+                            android:drawableLeft="@mipmap/psw_icon"
+                            android:hint="请输入新密码"
+                            android:inputType="textPassword"
+                            android:singleLine="true"
+                            android:background="#fff"
+                            android:textSize="16sp"
+                            android:textColor="#000"
+                            android:textColorHint="@color/light_gray" />
+
+                        <TextView
+                            android:layout_height="1dp"
+                            android:layout_width="match_parent"
+                            android:background="#F4F4F4" />
+
+                        <LinearLayout
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_margin="30dp">
+
+                            <EditText
+                                android:layout_height="match_parent"
+                                android:layout_width="0dp"
+                                android:layout_weight="3"
+                                android:text="@={data.mViewModel.verifyCode}"
+                                android:layout_gravity="center"
+                                android:hint="请输入验证码"
+                                android:inputType="number"
+                                android:maxLength="4"
+                                android:singleLine="true"
+                                android:background="#fff"
+                                android:textSize="18sp"
+                                android:textColor="#000"
+                                android:textColorHint="@color/light_gray" />
+
+                            <Button
+                                android:id="@+id/verify_but"
+                                android:textSize="14sp"
+                                android:text="@{data.mViewModel.codeButText}"
+                                android:onClick="@{data::OnVerifyCodeClick}"
+                                android:background="@drawable/login_button"
+                                android:layout_height="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_weight="2" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <Button
+                        android:text="更改密码"
+                        android:textSize="18sp"
+                        android:background="@drawable/login_button"
+                        android:layout_height="55dp"
+                        android:onClick="@{data::OnPwdBackClick}"
+                        android:layout_width="0dp"
+                        app:layout_widthPercent="90%"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/login_panel"
+                        android:translationY="-30dp" />
+
+                </androidx.percentlayout.widget.PercentRelativeLayout>
+            </LinearLayout>
+        </androidx.percentlayout.widget.PercentRelativeLayout>
+    </androidx.percentlayout.widget.PercentRelativeLayout>
+</layout>

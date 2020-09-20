@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.percentlayout.widget.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/login_bg">
+<androidx.percentlayout.widget.PercentRelativeLayout
+    android:layout_height="0dp"
+    app:layout_heightPercent="72%"
+    android:layout_width="match_parent"
+    android:layout_alignParentBottom="true">
+    <RadioGroup
+        android:id="@+id/login_group"
+        android:layout_height="40dp"
+        android:layout_width="0dp"
+        app:layout_widthPercent="58%"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/frame">
+        <RadioButton
+            android:id="@+id/login_but"
+            android:checked="true"
+            android:textColor="@drawable/corn_button_text_selector"
+            android:background="@drawable/corn_button_selector"
+            android:text="登录"
+            style="@style/RadioGroupButtonStyle">
+        </RadioButton>
+        <RadioButton
+            android:checked="false"
+            android:id="@+id/register_but"
+            android:textColor="@drawable/corn_button_text_selector"
+            android:background="@drawable/corn_button_selector"
+            android:text="注册"
+            style="@style/RadioGroupButtonStyle"/>
+    </RadioGroup>
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_centerHorizontal="true"
+        app:layout_widthPercent="80%"
+        app:layout_heightPercent="90%"
+        android:layout_below="@id/login_group"
+        android:orientation="vertical">
+    </LinearLayout>
+</androidx.percentlayout.widget.PercentRelativeLayout>
+</androidx.percentlayout.widget.PercentRelativeLayout>

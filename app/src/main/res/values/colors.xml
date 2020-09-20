@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="mainPick">#F74989</color>
+    <color name="SecondPick">#FBA369</color>
+    <color name="snow">#fffafa</color>
+    <color name="light_gray">#C6C6C6</color>
+    <color name="bg_gray">#F5F5F7</color>
+</resources>
