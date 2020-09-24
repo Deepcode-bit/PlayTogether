@@ -1,7 +1,5 @@
 package view_model;
 
-import android.widget.TextView;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 

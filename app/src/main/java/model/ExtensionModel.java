@@ -8,6 +8,10 @@ public class ExtensionModel implements Serializable {
     private int type;
     private int number;
 
+    private String originator;
+    private String startTime;
+    private String location;
+    
     public int getNumber() {
         return number;
     }
@@ -16,9 +20,7 @@ public class ExtensionModel implements Serializable {
         this.number = number;
     }
 
-    private String originator;
-    private String startTime;
-    private String location;
+
 
     public ExtensionModel(String id, String name, int type, int number, String originator, String startTime, String location) {
         ID = id;

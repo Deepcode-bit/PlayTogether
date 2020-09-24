@@ -105,8 +105,9 @@ public class Connection {
         return null;
     }
 
-    public static JSONObject getJson(int type,String path,Map<String,String> params) {
+    public static JSONObject getJson(int type,String path,Map<String,String> params,String route) {
         InputStream is = null;
+        path+=route;
         if(type==1)
             is=DoPost(path,params);
         else if(type==2)

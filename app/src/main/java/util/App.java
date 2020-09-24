@@ -15,7 +15,8 @@ public class App extends Application {
 
     public static final int sport=0,study=1,life=2,game=3;
     public static final int post=1,get=2;
-    public static final String netUrl="http://192.168.1.106:8080/PTServer/userservlet";
+    //不带路由的IP地址和端口号
+    public static final String netUrl="http://192.168.1.106:8080";
     public static final ThreadPoolExecutor mThreadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
     public static final String dataBaseName = "my_data";
     public static final int dataBaseVersion = 1;

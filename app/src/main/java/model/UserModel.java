@@ -7,18 +7,27 @@ public class UserModel {
     private String userName;
     private int joinNum;
     private int createNum;
-    private int userState;
-    private String headImage;
+    private int state;
+    private String avatar;
+    private String SID;
 
-    public UserModel(int uid, String email, String pwd, int userState,String userName,int joinNum,int createNum,String headImage) {
+    public UserModel(int uid, String email, String pwd, int userState, String userName, int joinNum, int createNum, String headImage) {
         UID = uid;
         this.email = email;
         this.pwd = pwd;
-        this.userState = userState;
+        this.state = userState;
         this.userName=userName;
         this.joinNum=joinNum;
         this.createNum=createNum;
-        this.headImage=headImage;
+        this.avatar=headImage;
+    }
+
+    public String getSID() {
+        return SID;
+    }
+
+    public void setSID(String SID) {
+        this.SID = SID;
     }
 
     public int getCreateNum() {
@@ -34,7 +43,7 @@ public class UserModel {
     }
 
     public int getUserState() {
-        return userState;
+        return state;
     }
 
     public String getEmail() {
@@ -42,7 +51,7 @@ public class UserModel {
     }
 
     public String getHeadImage() {
-        return headImage;
+        return avatar;
     }
 
     public String getPwd() {
@@ -62,7 +71,7 @@ public class UserModel {
     }
 
     public void setHeadImage(String headImage) {
-        this.headImage = headImage;
+        this.avatar = headImage;
     }
 
     public void setJoinNum(int joinNum) {
@@ -82,6 +91,6 @@ public class UserModel {
     }
 
     public void setUserState(int userState) {
-        this.userState = userState;
+        this.state = userState;
     }
 }

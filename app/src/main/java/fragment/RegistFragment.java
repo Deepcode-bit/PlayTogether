@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,10 +85,9 @@ public class RegistFragment extends Fragment {
             @Override
             public void run() {
                 Map<String, String> params = new HashMap<>();
-                params.put("operate", "getCode");
                 params.put("type", "regist");
-                params.put("Email", mViewModel.REmail.getValue());
-                final JSONObject json = Connection.getJson(App.post, App.netUrl, params);
+                params.put("email", mViewModel.REmail.getValue());
+                final JSONObject json = Connection.getJson(App.post, App.netUrl, params,"/admin/getCaptcha");
                 try {
                     if (json != null) {
                         final String msg;
@@ -143,11 +143,10 @@ public class RegistFragment extends Fragment {
             @Override
             public void run() {
                 Map<String,String> params=new HashMap<>();
-                params.put("operate","regist");
                 params.put("code2",mViewModel.verifyCode.getValue());
                 params.put("user",new Gson().toJson(user));
                 try {
-                    JSONObject json = Connection.getJson(App.post, App.netUrl, params);
+                    JSONObject json = Connection.getJson(App.post, App.netUrl, params,"/admin/registry");
                     if (json == null)
                         throw new Exception("服务器连接超时");
                     final String msg = json.get("msg").toString();

@@ -9,5 +9,14 @@
         android:id="@+id/selectFragment"
         android:name="fragment.SelectFragment"
         android:label="fragment_select"
-        tools:layout="@layout/fragment_select" />
+        tools:layout="@layout/fragment_select" >
+        <action
+            android:id="@+id/action_selectFragment_to_publicFragment"
+            app:destination="@id/publicFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/publicFragment"
+        android:name="fragment.PublicFragment"
+        android:label="fragment_public"
+        tools:layout="@layout/fragment_public" />
 </navigation>

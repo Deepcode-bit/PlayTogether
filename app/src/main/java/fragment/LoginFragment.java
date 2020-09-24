@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,8 +80,7 @@ public class LoginFragment extends Fragment {
         }
         final HashMap params=new HashMap<String,String>(){
             {
-                put("operate","login");
-                put("Email",mViewModel.email.getValue());
+                put("email",mViewModel.email.getValue());
                 put("pwd",mViewModel.pwd.getValue());
             }
         };
@@ -90,7 +90,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    JSONObject json = Connection.getJson(App.post, App.netUrl, params);
+                    JSONObject json = Connection.getJson(App.post, App.netUrl, params,"/admin/login");
                     if(json==null)
                         throw new Exception("服务器连接超时");
                     final String msg=json.get("msg").toString();

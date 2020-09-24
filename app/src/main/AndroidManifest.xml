@@ -12,12 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PublicActivity"></activity>
+        <activity android:name=".CertificationActivity"></activity>
+        <activity android:name=".PublicActivity" />
         <activity android:name=".ExtensionActivity" />
         <activity android:name=".PwdActivity" />
-        <activity
-            android:name=".ui.login.PwdActivity"
-            android:label="@string/title_activity_pwd" />
         <activity android:name=".MainActivity" />
         <activity android:name=".HostActivity">
             <intent-filter>

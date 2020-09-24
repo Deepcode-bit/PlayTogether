@@ -56,12 +56,11 @@ public class PwdActivity extends AppCompatActivity {
             public void run() {
                 HashMap<String, String> params = new HashMap<String, String>(){
                     {
-                        put("operate", "getCode");
                         put("type", "pwdBack");
-                        put("Email", mViewModel.REmail.getValue());
+                        put("email", mViewModel.REmail.getValue());
                     }
                 };
-                Connection.getJson(App.post, App.netUrl, params);
+                Connection.getJson(App.post, App.netUrl, params,"/admin/getCaptcha");
             }
         });
         codeTimer=new Timer();
@@ -103,14 +102,13 @@ public class PwdActivity extends AppCompatActivity {
             public void run() {
                 Map<String,String> params=new HashMap<String, String>(){
                     {
-                        put("operate","backPwd");
                         put("code2",mViewModel.verifyCode.getValue());
                         put("email",mViewModel.REmail.getValue());
                         put("pwd",mViewModel.RPwd.getValue());
                     }
                 };
                 try {
-                    JSONObject json = Connection.getJson(App.post, App.netUrl, params);
+                    JSONObject json = Connection.getJson(App.post, App.netUrl, params,"/member/modifyPassword");
                     if (json == null)
                         throw new Exception("服务器连接超时");
                     final String msg = json.get("msg").toString();

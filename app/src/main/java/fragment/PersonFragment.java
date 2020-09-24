@@ -6,19 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.Observable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -31,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.nepu.playtogether.CertificationActivity;
 import model.UserModel;
 import util.App;
 import util.Connection;
@@ -59,7 +55,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mBinding=FragmentPersonBinding.inflate(inflater,container,false);
-        mViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(HostViewModel.class);
+        mViewModel = ViewModelProviders.of(requireActivity()).get(HostViewModel.class);
         mBinding.setLifecycleOwner(getActivity());
         mBinding.setData((HostActivity) getActivity());
         return mBinding.getRoot();
@@ -133,7 +129,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
 
     private void LogIn(){
         Intent intent=new Intent();
-        intent.setClass(Objects.requireNonNull(getActivity()), MainActivity.class);
+        intent.setClass(requireActivity(), MainActivity.class);
         startActivity(intent);
     }
 
@@ -152,22 +148,26 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
                         user.setUserName(edit.getText().toString());
                         App.localUser.setValue(user);
                         new Dao(getActivity()).UpdateUser(user);
-                        new Thread(new Runnable() {
+                        App.mThreadPool.execute(new Runnable() {
                             @Override
                             public void run() {
                                 Map<String, String> params = new HashMap<String, String>() {
                                     {
-                                        put("operate", "update");
-                                        put("table", "user");
                                         put("user", new Gson().toJson(user));
                                     }
                                 };
-                                Connection.getJson(App.post, App.netUrl, params);
+                                Connection.getJson(App.post, App.netUrl, params,"/member/modifyInfo");
                             }
-                        }).start();
+                        });
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener()
                    {public void onClick(DialogInterface dialog, int which) {}});
         dialog.show();
+    }
+
+    public void EnterCertification(View v){
+        Intent intent=new Intent();
+        intent.setClass(requireActivity(), CertificationActivity.class);
+        startActivity(intent);
     }
 }
