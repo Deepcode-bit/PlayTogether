@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,20 +37,19 @@ import util.HandlerMsg;
 import view_model.LoginViewModel;
 
 
-public class RegistFragment extends Fragment {
+public class RegisterFragment extends Fragment {
 
     public LoginViewModel mViewModel;
     private MyHandler handler;
     private Timer codeTimer;
     private TimerTask task;
-    public RegistFragment() {
+    public RegisterFragment() {
         // Required empty public constructor
     }
 
-
     // TODO: Rename and change types and number of parameters
-    public static RegistFragment newInstance() {
-        return new RegistFragment();
+    public static RegisterFragment newInstance() {
+        return new RegisterFragment();
     }
 
     @Override
@@ -84,9 +81,11 @@ public class RegistFragment extends Fragment {
         App.mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                Map<String, String> params = new HashMap<>();
-                params.put("type", "regist");
-                params.put("email", mViewModel.REmail.getValue());
+                Map<String, String> params = new HashMap<String,String>()
+                {{
+                    put("type", "register");
+                    put("email", mViewModel.REmail.getValue());
+                }};
                 final JSONObject json = Connection.getJson(App.post, App.netUrl, params,"/admin/getCaptcha");
                 try {
                     if (json != null) {
@@ -142,9 +141,11 @@ public class RegistFragment extends Fragment {
         App.mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                Map<String,String> params=new HashMap<>();
-                params.put("code2",mViewModel.verifyCode.getValue());
-                params.put("user",new Gson().toJson(user));
+                Map<String,String> params=new HashMap<String, String>()
+                {{
+                    put("captcha",mViewModel.verifyCode.getValue());
+                    put("user",new Gson().toJson(user));
+                }};
                 try {
                     JSONObject json = Connection.getJson(App.post, App.netUrl, params,"/admin/registry");
                     if (json == null)
@@ -186,11 +187,11 @@ public class RegistFragment extends Fragment {
     }
 
     private static class MyHandler extends Handler{
-        private WeakReference<RegistFragment> registFragment;
+        private WeakReference<RegisterFragment> registerFragment;
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-            RegistFragment fragment=registFragment.get();
+            RegisterFragment fragment= registerFragment.get();
             if (msg.what == 0x001) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(fragment.getActivity(), R.style.AlertDialogBackground)
                         .setTitle("提示").setMessage(msg.getData().getString("alert") + msg.getData().getString("msg"));
@@ -198,8 +199,8 @@ public class RegistFragment extends Fragment {
             }
         }
 
-        MyHandler(RegistFragment fragment){
-            registFragment=new WeakReference<>(fragment);
+        MyHandler(RegisterFragment fragment){
+            registerFragment =new WeakReference<>(fragment);
         }
     }
 }

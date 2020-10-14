@@ -34,7 +34,7 @@
                 <androidx.percentlayout.widget.PercentRelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    tools:context="fragment.RegistFragment">
+                    tools:context="fragment.RegisterFragment">
 
                     <LinearLayout
                         android:layout_height="0dp"
@@ -97,7 +97,7 @@
                                 android:layout_gravity="center"
                                 android:hint="请输入验证码"
                                 android:inputType="number"
-                                android:maxLength="4"
+                                android:maxLength="6"
                                 android:singleLine="true"
                                 android:background="#fff"
                                 android:textSize="18sp"

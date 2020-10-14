@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_gray"
+    tools:context=".ChatRoomActivity">
+<LinearLayout
+    android:id="@+id/title2"
+    android:background="#fff"
+    android:layout_height="50dp"
+    android:gravity="center"
+    android:layout_width="match_parent">
+    <TextView
+        android:textSize="20sp"
+        android:textColor="#000"
+        android:text="聊天室"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+</LinearLayout>
+    <LinearLayout
+        android:layout_above="@+id/bottom_chat"
+        android:layout_below="@+id/title2"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+    <LinearLayout
+        android:id="@+id/bottom_chat"
+        android:layout_alignParentBottom="true"
+        android:layout_height="50dp"
+        android:background="#fff"
+        android:layout_width="match_parent">
+        <EditText
+            android:textColor="#000"
+            android:singleLine="true"
+            android:background="#fff"
+            android:layout_marginStart="20dp"
+            android:textColorHint="@color/light_gray"
+            android:hint="请输入内容.."
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"/>
+        <Button
+            android:textSize="16sp"
+            android:background="@color/mainPick"
+            android:text="发送"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"/>
+    </LinearLayout>
+</RelativeLayout>

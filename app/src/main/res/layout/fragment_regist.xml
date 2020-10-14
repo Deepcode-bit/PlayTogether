@@ -10,7 +10,7 @@
     <androidx.percentlayout.widget.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="fragment.RegistFragment">
+        tools:context="fragment.RegisterFragment">
 
         <LinearLayout
             android:layout_height="0dp"
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_margin="30dp"
-                android:text="@={data.registFragment.mViewModel.REmail}"
+                android:text="@={data.registerFragment.mViewModel.REmail}"
                 android:drawableLeft="@drawable/ic_email_black_24dp"
                 android:hint="请输入邮箱"
                 android:textSize="16sp"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center"
-                android:text="@={data.registFragment.mViewModel.RPwd}"
+                android:text="@={data.registerFragment.mViewModel.RPwd}"
                 android:drawableLeft="@mipmap/psw_icon"
                 android:hint="请输入登录密码"
                 android:inputType="textPassword"
@@ -69,11 +69,11 @@
                     android:layout_height="match_parent"
                     android:layout_width="0dp"
                     android:layout_weight="3"
-                    android:text="@={data.registFragment.mViewModel.verifyCode}"
+                    android:text="@={data.registerFragment.mViewModel.verifyCode}"
                     android:layout_gravity="center"
                     android:hint="请输入验证码"
                     android:inputType="number"
-                    android:maxLength="4"
+                    android:maxLength="6"
                     android:singleLine="true"
                     android:background="#fff"
                     android:textSize="18sp"
@@ -83,8 +83,8 @@
                 <Button
                     android:id="@+id/verify_but"
                     android:textSize="14sp"
-                    android:text="@{data.registFragment.mViewModel.codeButText}"
-                    android:onClick="@{data.registFragment::OnVerifyCodeClick}"
+                    android:text="@{data.registerFragment.mViewModel.codeButText}"
+                    android:onClick="@{data.registerFragment::OnVerifyCodeClick}"
                     android:background="@drawable/login_button"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -94,7 +94,7 @@
 
         <Button
             android:text="注册"
-            android:onClick="@{data.registFragment::OnRegisterButClick}"
+            android:onClick="@{data.registerFragment::OnRegisterButClick}"
             android:textSize="18sp"
             android:background="@drawable/login_button"
             android:layout_height="55dp"

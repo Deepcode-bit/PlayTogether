@@ -4,8 +4,11 @@
     android:layout_width="match_parent"
     android:gravity="center"
     android:layout_margin="10dp"
-    android:layout_height="50dp"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_height="50dp"
+        android:layout_width="match_parent">
     <EditText
         android:drawableLeft="@drawable/ic_search_black_24dp"
         android:background="@drawable/corn_button"
@@ -25,4 +28,54 @@
         android:layout_height="40dp"
         android:layout_width="0dp"
         android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <RadioGroup
+            android:orientation="horizontal"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+            <RadioButton
+                android:layout_margin="10dp"
+                style="@style/RadioGroupButtonStyle"
+                android:textColor="@drawable/corn_button_text_selector2"
+                android:background="@drawable/corn_button_selector3"
+                android:text="全部"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+            <RadioButton
+                android:layout_margin="10dp"
+                style="@style/RadioGroupButtonStyle"
+                android:textColor="@drawable/corn_button_text_selector2"
+                android:background="@drawable/corn_button_selector3"
+                android:text="学习"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+            <RadioButton
+                android:layout_margin="10dp"
+                style="@style/RadioGroupButtonStyle"
+                android:textColor="@drawable/corn_button_text_selector2"
+                android:background="@drawable/corn_button_selector3"
+                android:text="运动"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+            <RadioButton
+                android:layout_margin="10dp"
+                style="@style/RadioGroupButtonStyle"
+                android:textColor="@drawable/corn_button_text_selector2"
+                android:background="@drawable/corn_button_selector3"
+                android:text="生活"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+            <RadioButton
+                android:layout_margin="10dp"
+                style="@style/RadioGroupButtonStyle"
+                android:textColor="@drawable/corn_button_text_selector2"
+                android:background="@drawable/corn_button_selector3"
+                android:text="游戏"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+        </RadioGroup>
+    </LinearLayout>
 </LinearLayout>

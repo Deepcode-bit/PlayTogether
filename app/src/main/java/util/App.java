@@ -17,6 +17,8 @@ public class App extends Application {
     public static final int post=1,get=2;
     //不带路由的IP地址和端口号
     public static final String netUrl="http://192.168.1.106:8080";
+    //教务系统API接口
+    public static final String EASUrl="http://jwgl.nepu.edu.cn/app.do";
     public static final ThreadPoolExecutor mThreadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
     public static final String dataBaseName = "my_data";
     public static final int dataBaseVersion = 1;

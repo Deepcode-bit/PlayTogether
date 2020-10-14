@@ -8,13 +8,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import fragment.LoginFragment;
-import fragment.RegistFragment;
+import fragment.RegisterFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private SparseArray<Fragment> fragments;
     public LoginFragment loginFragment;
-    public RegistFragment registFragment;
+    public RegisterFragment registerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void InitView(){
         loginFragment=LoginFragment.newInstance();
-        registFragment=RegistFragment.newInstance();
+        registerFragment = RegisterFragment.newInstance();
         RadioGroup loginGroup = findViewById(R.id.login_group);
         fragments = new SparseArray<Fragment>() {};
         fragments.append(R.id.login_but, loginFragment);
-        fragments.append(R.id.register_but, registFragment);
+        fragments.append(R.id.register_but, registerFragment);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 loginFragment).commit();
         loginGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

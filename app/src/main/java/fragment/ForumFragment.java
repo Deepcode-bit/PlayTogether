@@ -1,5 +1,6 @@
 package fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.nepu.playtogether.ChatRoomActivity;
 import com.nepu.playtogether.HostActivity;
 import com.nepu.playtogether.R;
 import com.nepu.playtogether.databinding.FragmentForumBinding;
@@ -94,7 +96,10 @@ public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(getActivity(),"点击了"+position,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(),"点击了"+position,Toast.LENGTH_SHORT).show();
+        Intent intent=new Intent();
+        intent.setClass(requireActivity(), ChatRoomActivity.class);
+        startActivity(intent);
     }
 
     private void addMessage(MessageModel msg){
