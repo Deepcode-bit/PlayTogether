@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
@@ -23,30 +22,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import model.MessageModel;
 import adapter.MsgAdapter;
 import adapter.MsgAdapter.onItemClickListener;
 import adapter.MsgAdapter.onItemDeleteClickListener;
 import adapter.MsgAdapter.onItemFirstClickListener;
+import model.MessageModel;
+import util.App;
+import util.TcpClient;
 import view.SlideRecyclerView;
 import view_model.HostViewModel;
 
 
-public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, onItemClickListener,onItemDeleteClickListener,onItemFirstClickListener {
+public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, onItemClickListener,onItemDeleteClickListener,onItemFirstClickListener,TcpClient.MessageReceiveListener {
 
     private SlideRecyclerView recyclerView;
     private MsgAdapter msgAdapter;
     private FragmentForumBinding mBinding;
     private HostViewModel mViewModel;
     private SwipeRefreshLayout refreshLayout;
-    private List<MessageModel> list;
-    private ActivityOptionsCompat activityOptionsCompat;
 
     public ForumFragment() {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
+
     public static ForumFragment newInstance() {
         return new ForumFragment();
     }
@@ -59,10 +58,11 @@ public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBinding= FragmentForumBinding.inflate(inflater,container,false);
+        mBinding = FragmentForumBinding.inflate(inflater, container, false);
         mViewModel = ViewModelProviders.of(requireActivity()).get(HostViewModel.class);
         mBinding.setLifecycleOwner(getActivity());
         mBinding.setData((HostActivity) getActivity());
+        mViewModel.openChatUID = -1;
         return mBinding.getRoot();
     }
 
@@ -79,54 +79,77 @@ public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         msgAdapter.setOnItemClickListener(this);
         msgAdapter.setOnItemDeleteClickListener(this);
         msgAdapter.setOnItemFirstClickListener(this);
-        list=new ArrayList<>();
-        list.add(new MessageModel("冯帅","你代码怎么还没交",2,"16:30"));
-        list.add(new MessageModel("文剑旭","等我一下我打排位",1,"16:50"));
-        msgAdapter.setAllMsg(list);
+        msgAdapter.setAllMsg(mViewModel.messages.getValue());
         msgAdapter.notifyDataSetChanged();
+
+        TcpClient.getInstance().setOnMessageReceiveListener(this);
     }
 
     @Override
     public void onRefresh() {
-        addMessage(new MessageModel("海棠","今天有个姑娘来找你",1,"20:50"));
-        msgAdapter.setAllMsg(list);
+        msgAdapter.setAllMsg(mViewModel.messages.getValue());
         msgAdapter.notifyDataSetChanged();
         refreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        //Toast.makeText(getActivity(),"点击了"+position,Toast.LENGTH_SHORT).show();
-        Intent intent=new Intent();
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        MessageModel msg = mViewModel.messages.getValue().get(position);
+        msg.setUnReadNum(0);
+        msgAdapter.notifyDataSetChanged();
+        bundle.putInt("receiverType", MessageModel.PERSON);
+        bundle.putInt("receiverId", msg.getSenderId());
+        bundle.putString("title", msg.getSenderName());
+        bundle.putString("senderName", App.localUser.getValue().getUserName());
+        intent.putExtras(bundle);
         intent.setClass(requireActivity(), ChatRoomActivity.class);
+        mViewModel.openChatUID = msg.getSenderId();
         startActivity(intent);
     }
 
-    private void addMessage(MessageModel msg){
-        for(int i=0;i<list.size();i++){
-            MessageModel message=list.get(i);
-            //判断改消息的发送者之前是否存在
-            if(msg.getSenderName().equals(message.getSenderName())){
-                msg.setUnReadNum(msg.getUnReadNum()+message.getUnReadNum());
-                list.remove(i);
-                list.add(i,msg);
-                return;
-            }
-        }
-        list.add(0,msg);
-    }
 
     @Override
     public void onDeleteClick(View view, int position) {
-        list.remove(position);
+        mViewModel.messages.getValue().remove(position);
         msgAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * 置顶操作
+     * @param view
+     * @param position
+     */
     @Override
     public void onFirstClick(View view, int position) {
-        MessageModel msg = list.get(position);
-        list.remove(msg);
-        list.add(0,msg);
+        MessageModel msg = mViewModel.messages.getValue().get(position);
+        mViewModel.messages.getValue().remove(msg);
+        mViewModel.messages.getValue().add(0,msg);
         msgAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 收到消息的回调函数
+     * @param msg
+     */
+    @Override
+    public void onMessageReceive(final MessageModel msg) {
+        requireView().post(new Runnable() {
+            @Override
+            public void run() {
+                if(msg.getSendType()!=MessageModel.EXTENSION){
+                    msgAdapter.notifyDataSetChanged();
+                }else{
+                    App.messages.add(msg);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        TcpClient.getInstance().removeListener(this);
     }
 }

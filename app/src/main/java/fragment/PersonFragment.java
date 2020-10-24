@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +23,19 @@ import com.nepu.playtogether.MainActivity;
 import com.nepu.playtogether.R;
 import com.nepu.playtogether.databinding.FragmentPersonBinding;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import com.nepu.playtogether.CertificationActivity;
+
+import model.MessageModel;
 import model.UserModel;
 import util.App;
 import util.Connection;
 import util.Dao;
+import util.TcpClient;
 import view_model.HostViewModel;
 
 
@@ -43,7 +48,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
+
     public static PersonFragment newInstance() {
         return new PersonFragment();
     }
@@ -64,11 +69,9 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        UserModel user=new Dao(getActivity()).getLocalUser();
+
         UpdateView();
-        if(user!=null){
-          App.localUser.setValue(user);
-        }
+
     }
 
     private void UpdateView(){
@@ -102,10 +105,10 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void LogOut(){
+    private void LogOut() {
         AlertDialog.Builder dialog;
-        if(App.localUser.getValue()!=null) {
-            dialog = new AlertDialog.Builder(getActivity(),R.style.AlertDialogBackground)
+        if (App.localUser.getValue() != null) {
+            dialog = new AlertDialog.Builder(getActivity(), R.style.AlertDialogBackground)
                     .setTitle("提示")
                     .setCancelable(false)
                     .setMessage("确定要退出登录吗?")
@@ -115,14 +118,19 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
                             new Dao(getActivity()).DeleteUser(Objects.requireNonNull(App.localUser.getValue()));
                             App.localUser.setValue(null);
                             UpdateView();
-                            Toast.makeText(getActivity(),"已退出登录",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "已退出登录", Toast.LENGTH_SHORT).show();
+                            try {
+                                TcpClient.getInstance().closeClient();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     });
-        }else{
-            dialog = new AlertDialog.Builder(getActivity(),R.style.AlertDialogBackground).setTitle("提示").setMessage("您还未登录");
+        } else {
+            dialog = new AlertDialog.Builder(getActivity(), R.style.AlertDialogBackground).setTitle("提示").setMessage("您还未登录");
         }
         dialog.show();
     }

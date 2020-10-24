@@ -18,10 +18,17 @@ import model.Member;
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberViewHolder> {
 
     private List<Member> members;
-
+    private MemberAdapter.onItemClickListener itemClickListener;
+    public interface  onItemClickListener{
+         void onItemClick(View v,int position);
+    }
 
     public void setMembers(List<Member> list){
         this.members=list;
+    }
+
+    public void setOnItemClickListener(onItemClickListener listener){
+        itemClickListener=listener;
     }
 
     @NonNull
@@ -33,9 +40,17 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MemberViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MemberViewHolder holder, final int position) {
         Member member=members.get(position);
         holder.memberName.setText(member.getUserName());
+        if(itemClickListener!=null){
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemClickListener.onItemClick(v,position);
+                }
+            });
+        }
     }
 
     @Override

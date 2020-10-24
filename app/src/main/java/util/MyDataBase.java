@@ -15,7 +15,7 @@ public class MyDataBase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String sql="create table user(uid integer primary key," +
+        final String sql="create table user(uid integer primary key AUTOINCREMENT," +
                 "userName,pwd,email,joinNum,createNum,userState,headImage)";
         db.execSQL(sql);
     }

@@ -33,10 +33,12 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
         <RadioGroup
+            android:id="@+id/head_radio_group"
             android:orientation="horizontal"
             android:layout_height="match_parent"
             android:layout_width="match_parent">
             <RadioButton
+                android:id="@+id/zero_radio_button"
                 android:layout_margin="10dp"
                 style="@style/RadioGroupButtonStyle"
                 android:textColor="@drawable/corn_button_text_selector2"

@@ -3,7 +3,10 @@ package model;
 import java.io.Serializable;
 
 public class ExtensionModel implements Serializable {
-    private String ID;
+    private int ID;
+    private int UID;
+    private int state;
+
     private String name;
     private int type;
     private int number;
@@ -20,13 +23,10 @@ public class ExtensionModel implements Serializable {
         this.number = number;
     }
 
-
-
-    public ExtensionModel(String id, String name, int type, int number, String originator, String startTime, String location) {
-        ID = id;
+    public ExtensionModel(String name, int UID,int type, String originator, String startTime, String location) {
         this.name = name;
         this.type = type;
-        this.number = number;
+        this.UID=UID;
         this.originator = originator;
         this.startTime = startTime;
         this.location = location;
@@ -44,7 +44,7 @@ public class ExtensionModel implements Serializable {
         return type;
     }
 
-    public String getID() {
+    public int getID() {
         return ID;
     }
 
@@ -54,5 +54,21 @@ public class ExtensionModel implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public int getUID() {
+        return UID;
+    }
+
+    public void setUID(int UID) {
+        this.UID = UID;
     }
 }

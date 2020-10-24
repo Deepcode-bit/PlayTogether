@@ -38,37 +38,40 @@
                 android:layout_width="match_parent">
 
                 <EditText
+                    android:text="@={data.mViewModel.extensionName}"
                     android:theme="@style/MyEditText"
                     android:layout_margin="10dp"
                     android:hint="请输入活动名称"
                     android:padding="10dp"
                     android:singleLine="true"
                     android:textColorHint="@color/light_gray"
-                    android:textColor="@color/mainPick"
+                    android:textColor="#000"
                     android:textSize="18sp"
                     android:layout_height="45dp"
                     android:layout_width="200dp" />
-
                 <EditText
+                    android:text="@={data.mViewModel.extensionDate}"
                     android:theme="@style/MyEditText"
                     android:layout_margin="10dp"
                     android:hint="请输入活动时间"
+                    android:inputType="datetime"
                     android:padding="10dp"
                     android:singleLine="true"
                     android:textColorHint="@color/light_gray"
-                    android:textColor="@color/mainPick"
+                    android:textColor="#000"
                     android:textSize="18sp"
                     android:layout_height="45dp"
                     android:layout_width="match_parent" />
 
                 <EditText
+                    android:text="@={data.mViewModel.extensionPlace}"
                     android:theme="@style/MyEditText"
                     android:layout_margin="10dp"
                     android:hint="请输入活动地点"
                     android:padding="10dp"
                     android:singleLine="true"
                     android:textColorHint="@color/light_gray"
-                    android:textColor="@color/mainPick"
+                    android:textColor="#000"
                     android:textSize="18sp"
                     android:layout_height="45dp"
                     android:layout_width="match_parent" />
@@ -83,6 +86,7 @@
             android:layout_width="match_parent">
 
             <Button
+                android:onClick="@{data::onExtensionCreate}"
                 android:drawableEnd="@drawable/ic_arrow_forward_black_24dp"
                 android:textSize="20sp"
                 android:layout_gravity="center_vertical"

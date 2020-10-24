@@ -167,6 +167,8 @@
             android:layout_width="match_parent">
 
             <Button
+                android:onClick="onJoinExtension"
+                android:id="@+id/join_but"
                 android:layout_margin="10dp"
                 android:background="@drawable/login_button"
                 android:textSize="18sp"
@@ -176,8 +178,11 @@
                 android:layout_weight="1" />
 
             <Button
+                android:id="@+id/chat_but"
+                android:enabled="false"
+                android:onClick="onEnterChatRoomClick"
                 android:layout_margin="10dp"
-                android:background="@drawable/colorful_button"
+                android:background="@drawable/colorful_button_selector"
                 android:textSize="18sp"
                 android:text="进入群聊"
                 android:layout_height="match_parent"

@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_select" >
         <action
             android:id="@+id/action_selectFragment_to_publicFragment"
-            app:destination="@id/publicFragment" />
+            app:destination="@id/publicFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/publicFragment"

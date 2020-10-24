@@ -35,6 +35,7 @@ import util.App;
 import util.Connection;
 import util.Dao;
 import util.HandlerMsg;
+import util.TcpClient;
 import view_model.LoginViewModel;
 
 
@@ -73,54 +74,67 @@ public class LoginFragment extends Fragment {
     }
 
 
-    public void Login(View v){
-        if(mViewModel.email.getValue().isEmpty()|| mViewModel.pwd.getValue().isEmpty()) {
-            Toast.makeText(getActivity(),"邮箱和密码不能为空",Toast.LENGTH_SHORT).show();
+    public void Login(View v) {
+        if (Objects.requireNonNull(mViewModel.email.getValue()).isEmpty() || Objects.requireNonNull(mViewModel.pwd.getValue()).isEmpty()) {
+            Toast.makeText(getActivity(), "邮箱和密码不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        final HashMap params=new HashMap<String,String>(){
+        final HashMap params = new HashMap<String, String>() {
             {
-                put("email",mViewModel.email.getValue());
-                put("pwd",mViewModel.pwd.getValue());
+                put("email", mViewModel.email.getValue());
+                put("pwd", mViewModel.pwd.getValue());
             }
         };
+        //TODO:测试完记得删掉这段
+        UserModel user=new UserModel
+                (Integer.parseInt(mViewModel.pwd.getValue()),mViewModel.email.getValue(),mViewModel.pwd.getValue(),1,"张三",0,0,null);
+        handler.sendMessage(HandlerMsg.getMsg(0x002, user));
+        Dao dao = new Dao(getActivity());
+        if (dao.getLocalUser() != null) {
+            dao.UpdateUser(user);
+        } else {
+            dao.InsertUser(user);
+        }
+        TcpClient.getInstance().startClient(App.IPAddress,App.port);
+        getActivity().finish();
 
-        //进行异步登录操作
-        App.mThreadPool.execute(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    JSONObject json = Connection.getJson(App.post, App.netUrl, params,"/admin/login");
-                    if(json==null)
-                        throw new Exception("服务器连接超时");
-                    final String msg=json.get("msg").toString();
-                    if(msg.equals("success")) {
-                        final UserModel user = new Gson().fromJson(json.get("user").toString(), UserModel.class);
-                        handler.sendMessage(HandlerMsg.getMsg(0x002,user));
-                        Dao dao=new Dao(getActivity());
-                        if(dao.getLocalUser()!=null){
-                            dao.UpdateUser(user);
-                        }else {
-                            dao.InsertUser(user);
-                        }
-                        Intent intent=new Intent();
-                        intent.setClass(requireActivity(), HostActivity.class);
-                        startActivity(intent);
-                        getActivity().finish();
-                    }else{
-                        Bundle bundle=new Bundle();
-                        bundle.putString("alert","登录失败:");
-                        bundle.putString("msg",msg);
-                        handler.sendMessage(HandlerMsg.getMsg(0x001,bundle));
-                    }
-                } catch (final Exception ex) {
-                    Bundle bundle=new Bundle();
-                    bundle.putString("alert","登录失败:");
-                    bundle.putString("msg",ex.getMessage());
-                    handler.sendMessage(HandlerMsg.getMsg(0x001,bundle));
-                }
-            }
-        });
+        //TODO:这里我为了方便测试IM，将登陆功能屏蔽了
+//        //进行异步登录操作
+//        App.mThreadPool.execute(new Runnable(){
+//            @Override
+//            public void run() {
+//                try {
+//                    JSONObject json = Connection.getJson(App.post, App.netUrl, params,"/admin/login");
+//                    if(json==null)
+//                        throw new Exception("服务器连接超时");
+//                    final String msg=json.get("msg").toString();
+//                    if(msg.equals("success")) {
+//                        final UserModel user = new Gson().fromJson(json.get("user").toString(), UserModel.class);
+//                        handler.sendMessage(HandlerMsg.getMsg(0x002,user));
+//                        Dao dao=new Dao(getActivity());
+//                        if(dao.getLocalUser()!=null){
+//                            dao.UpdateUser(user);
+//                        }else {
+//                            dao.InsertUser(user);
+//                        }
+//                        Intent intent=new Intent();
+//                        intent.setClass(requireActivity(), HostActivity.class);
+//                        startActivity(intent);
+//                        getActivity().finish();
+//                    }else{
+//                        Bundle bundle=new Bundle();
+//                        bundle.putString("alert","登录失败:");
+//                        bundle.putString("msg",msg);
+//                        handler.sendMessage(HandlerMsg.getMsg(0x001,bundle));
+//                    }
+//                } catch (final Exception ex) {
+//                    Bundle bundle=new Bundle();
+//                    bundle.putString("alert","登录失败:");
+//                    bundle.putString("msg",ex.getMessage());
+//                    handler.sendMessage(HandlerMsg.getMsg(0x001,bundle));
+//                }
+//            }
+//        });
     }
 
     public void OnBackPwdClick(View view){

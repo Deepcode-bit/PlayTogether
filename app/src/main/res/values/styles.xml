@@ -1,13 +1,16 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowContentTransitions">true</item>
+    <style name="my_anim">
+        <item name="android:activityOpenEnterAnimation">@anim/nav_default_pop_enter_anim</item>
     </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowContentTransitions">false</item>
+    </style>
+
     <style name="RadioGroupButtonStyle">
         <!-- 这个属性是去掉button 默认样式-->
         <item name="android:button">@null</item>

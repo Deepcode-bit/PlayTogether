@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,8 +21,8 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
     List<ExtensionModel> extensions;
 
     //定义ViewType常量
-    public static final int TYPE_NORMAL=1;
-    public static final int TYPE_HEAD=0;
+    private static final int TYPE_NORMAL=1;
+    private static final int TYPE_HEAD=0;
 
     private onItemClickListener itemClickListener;
     private boolean hasHeadView;
@@ -58,7 +59,10 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
-        if(getItemViewType(position)==TYPE_HEAD)return;
+        if(getItemViewType(position)==TYPE_HEAD){
+            holder.radioGroup.check(R.id.zero_radio_button);
+            return;
+        }
         ExtensionModel extension=extensions.get(position);
         holder.type.setText(App.getExtensionType(extension.getType()));
         holder.cellLayout.setBackgroundResource(App.getExtensionDrawable(extension.getType()));
@@ -89,12 +93,13 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
         this.itemClickListener=listener;
     }
 
-
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView type,name,originator,startTime,location;
         LinearLayout cellLayout;
-        public MyViewHolder(@NonNull View itemView) {
+        RadioGroup radioGroup;
+        MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            radioGroup=itemView.findViewById(R.id.head_radio_group);
             cellLayout=itemView.findViewById(R.id.cell_layout);
             type=itemView.findViewById(R.id.type_text);
             name=itemView.findViewById(R.id.name_text);

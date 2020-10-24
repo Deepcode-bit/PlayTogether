@@ -32,7 +32,6 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
     private RecyclerView recyclerView;
     private MAdapter mAdapter;
     private SwipeRefreshLayout refreshLayout;
-    private List<ExtensionModel> list;
     private FragmentExtensionBinding mBinding;
     private HostViewModel mViewModel;
 
@@ -40,7 +39,6 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static ExtensionFragment newInstance() {
         ExtensionFragment fragment = new ExtensionFragment();
         Bundle args = new Bundle();
@@ -70,20 +68,14 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
         mAdapter=new MAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(mAdapter);
-        list=new ArrayList<>();
-        int number=5;
-        list.add(new ExtensionModel("100","篮球", App.sport, number, "张三","暂定","暂定"));
-        list.add(new ExtensionModel("101","王者荣耀排位", App.game, number, "文剑旭","暂定","暂定"));
-        list.add(new ExtensionModel("102","看电影:《花木兰》", App.life, number, "潘博飞","暂定","暂定"));
-        list.add(new ExtensionModel("103","图书馆自习", App.study, number, "冯帅","暂定","暂定"));
-        list.add(new ExtensionModel("104","怪物猎人冰原", App.game, number, "玛丽","暂定","暂定"));
-        list.add(new ExtensionModel("105","人类一败涂地", App.game, number, "玛丽","暂定","暂定"));
-        mAdapter.SetAllExtension(list);
+        mAdapter.SetAllExtension(mViewModel.extensions.getValue());
+        //TODO:测试数据，记得删掉这个
+        mViewModel.extensions.getValue().add(new ExtensionModel("篮球",5,App.sport,"李勇","18:00","大活篮球场"));
         mAdapter.SetHeadView(true);
-        mAdapter.notifyDataSetChanged();
         refreshLayout = getView().findViewById(R.id.ex_fresh_layout);
         refreshLayout.setOnRefreshListener(this);
         mAdapter.setOnItemClickListener(this);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -94,11 +86,11 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onItemClick(View view, int Position) {
         Intent intent=new Intent();
-        ExtensionModel extension=list.get(Position);
+        ExtensionModel extension=mViewModel.extensions.getValue().get(Position);
         Bundle bundle=new Bundle();
         bundle.putSerializable("extension",extension);
         intent.putExtras(bundle);
-        intent.setClass(getActivity(), ExtensionActivity.class);
+        intent.setClass(requireActivity(), ExtensionActivity.class);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, "head_bg");
 
         startActivity(intent,activityOptionsCompat.toBundle());
@@ -106,7 +98,16 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
 
     public void onPublicExtension(View v){
         Intent intent=new Intent();
-        intent.setClass(getActivity(), PublicActivity.class);
-        startActivity(intent);
+        intent.setClass(requireActivity(), PublicActivity.class);
+        startActivityForResult(intent,0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data == null) return;
+        ExtensionModel extension = (ExtensionModel) data.getSerializableExtra("extension");
+        mViewModel.extensions.getValue().add(extension);
+        mAdapter.notifyDataSetChanged();
     }
 }

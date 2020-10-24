@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,6 +15,7 @@
     android:gravity="center"
     android:layout_width="match_parent">
     <TextView
+        android:id="@+id/title3"
         android:textSize="20sp"
         android:textColor="#000"
         android:text="聊天室"
@@ -22,17 +24,22 @@
         android:layout_width="wrap_content"/>
 </LinearLayout>
     <LinearLayout
-        android:layout_above="@+id/bottom_chat"
-        android:layout_below="@+id/title2"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_view"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"/>
+    </LinearLayout>
     <LinearLayout
+        android:layout_marginBottom="10dp"
         android:id="@+id/bottom_chat"
-        android:layout_alignParentBottom="true"
         android:layout_height="50dp"
         android:background="#fff"
         android:layout_width="match_parent">
         <EditText
+            android:id="@+id/msg_edit"
             android:textColor="#000"
             android:singleLine="true"
             android:background="#fff"
@@ -43,10 +50,11 @@
             android:layout_width="0dp"
             android:layout_weight="1"/>
         <Button
+            android:onClick="onSendMsgClick"
             android:textSize="16sp"
-            android:background="@color/mainPick"
+            android:background="@drawable/rippler_pick"
             android:text="发送"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"/>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

@@ -6,9 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.nepu.playtogether.R;
 
+import java.security.cert.Extension;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import model.ExtensionModel;
+import model.MessageModel;
 import model.UserModel;
 
 public class App extends Application {
@@ -19,10 +23,20 @@ public class App extends Application {
     public static final String netUrl="http://192.168.1.106:8080";
     //教务系统API接口
     public static final String EASUrl="http://jwgl.nepu.edu.cn/app.do";
+    //IM TCP连接的地址和接口
+    //TODO:内网IP，记得改IP地址
+    public static final String IPAddress="192.168.1.106";
+    public static final int port=1230;
+
     public static final ThreadPoolExecutor mThreadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
     public static final String dataBaseName = "my_data";
     public static final int dataBaseVersion = 1;
+    //本地存储的账号信息
     public static MutableLiveData<UserModel> localUser=new MutableLiveData<>();
+    //正在进行的活动(参加)
+    public static List<ExtensionModel> ongoingExtensions;
+    //消息集合
+    public static List<MessageModel> messages;
 
     public static String getExtensionType(int type){
         String typeString=null;
