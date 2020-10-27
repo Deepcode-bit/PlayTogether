@@ -120,6 +120,7 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
         //获取数据源
+        refreshLayout.setRefreshing(false);
         if (App.localUser.getValue() == null) {
             Toast.makeText(requireActivity(), "请先登录", Toast.LENGTH_SHORT).show();
             return;
@@ -129,7 +130,6 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
             return;
         }
         App.mThreadPool.execute(mViewModel.getAllExtension);
-        refreshLayout.setRefreshing(false);
         progressBar.setVisibility(View.VISIBLE);
     }
 

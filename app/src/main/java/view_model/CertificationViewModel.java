@@ -17,9 +17,11 @@ public class CertificationViewModel extends ViewModel {
     public MutableLiveData<String> stuPwd;
     public MutableLiveData<String> statue;
 
-    public CertificationViewModel(){
-        stuNumber=new MutableLiveData<>("");
-        stuPwd=new MutableLiveData<>("");
-        statue= new MutableLiveData<>(App.getStateType(App.localUser.getValue().getUserState()));
+    public CertificationViewModel() {
+        stuNumber = new MutableLiveData<>("");
+        stuPwd = new MutableLiveData<>("");
+        statue = new MutableLiveData<>("未登录");
+        if (App.localUser.getValue() != null)
+            statue.setValue(App.getStateType(App.localUser.getValue().getUserState()));
     }
 }
