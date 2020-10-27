@@ -38,7 +38,7 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
     public MutableLiveData<List<MessageModel>> messages;
     public int openChatUID;
     public int searchID;
-    public String type;
+    public int type;
 
     public HostViewModel(){
         userName=new MutableLiveData<>();
@@ -142,7 +142,7 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
         @Override
         public void run() {
             HashMap<String,String> params=new HashMap<>();
-            params.put("tag",type);
+            params.put("tag",String.valueOf(type));
             JSONObject resultJson = Connection.getJson(App.get, App.netUrl, params,"/extension/getByTag/"+type);
             try {
                 if(resultJson==null) throw new JSONException("获取活动为空");

@@ -1,7 +1,7 @@
 package model;
 
 public class UserModel {
-    private int UID;
+    private int uid;
     private String email;
     private String pwd;
     private String userName;
@@ -9,10 +9,10 @@ public class UserModel {
     private int createNum;
     private int state;
     private String avatar;
-    private String SID;
+    private String sid;
 
     public UserModel(int uid, String email, String pwd, int userState, String userName, int joinNum, int createNum, String headImage) {
-        UID = uid;
+        this.uid = uid;
         this.email = email;
         this.pwd = pwd;
         this.state = userState;
@@ -23,11 +23,11 @@ public class UserModel {
     }
 
     public String getSID() {
-        return SID;
+        return sid;
     }
 
     public void setSID(String SID) {
-        this.SID = SID;
+        this.sid = SID;
     }
 
     public int getCreateNum() {
@@ -39,7 +39,7 @@ public class UserModel {
     }
 
     public int getUID() {
-        return UID;
+        return uid;
     }
 
     public int getUserState() {
@@ -83,7 +83,7 @@ public class UserModel {
     }
 
     public void setUID(int UID) {
-        this.UID = UID;
+        this.uid = UID;
     }
 
     public void setUserName(String userName) {

@@ -47,7 +47,6 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
     private HostViewModel mViewModel;
     private ProgressBar progressBar;
     public static MyHandler handler;
-    private final String[] extensionTypes=new String[]{"全部","学习","运动","生活","游戏"};
     public static final int extensionDataChange=0x001;
     public static final int notifyError=0x002;
 
@@ -106,15 +105,7 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
             return;
         }
         progressBar.setVisibility(View.VISIBLE);
-        App.mThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                    App.mThreadPool.execute(mViewModel.getAllExtension);
-                }catch (Exception ex){}
-            }
-        });
+        App.mThreadPool.execute(mViewModel.getAllExtension);
     }
 
     @Override
@@ -191,10 +182,11 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         int id = 0;
+        //TODO:标签为全部时获取全部活动
         switch (checkedId){
-            case R.id.zero_radio_button:id=0;break;
+            case R.id.sport_radio:id=0;break;
             case R.id.lean_radio:id=1;break;
-            case R.id.sport_radio:id=2;break;
+            case R.id.life_radio:id=2;break;
             case R.id.game_radio:id=3;break;
         }
         //获取数据源
@@ -206,7 +198,7 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
             Toast.makeText(requireActivity(), "请先认证", Toast.LENGTH_SHORT).show();
             return;
         }
-        mViewModel.type=extensionTypes[id];
+        mViewModel.type=id;
         App.mThreadPool.execute(mViewModel.getExtensionsByType);
         progressBar.setVisibility(View.VISIBLE);
     }

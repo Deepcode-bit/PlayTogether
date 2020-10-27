@@ -213,12 +213,12 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                     UserModel userModel = gson.fromJson(jsonObject.toString(), UserModel.class);
                     userModels.add(userModel);
                 }
-                members=new ArrayList<>();
+                members.clear();
                 for(UserModel user: userModels){
                     members.add(new Member(user.getUID(),user.getEmail(),user.getUserName(),user.getHeadImage()));
                 }
                 //通知UI更新
-                ExtensionFragment.handler.sendEmptyMessage(MyHandler.changeData);
+                ExtensionActivity.handler.sendEmptyMessage(MyHandler.changeData);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 Bundle bundle = new Bundle();
