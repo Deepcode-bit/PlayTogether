@@ -20,8 +20,6 @@ public class CertificationViewModel extends ViewModel {
     public CertificationViewModel(){
         stuNumber=new MutableLiveData<>("");
         stuPwd=new MutableLiveData<>("");
-        //TODO:需要设置登录后才能进行认证
-        //statue= new MutableLiveData<>(App.getStateType(App.localUser.getValue().getUserState()));
-        statue=new MutableLiveData<>("未认证");
+        statue= new MutableLiveData<>(App.getStateType(App.localUser.getValue().getUserState()));
     }
 }

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="100dp"
     android:layout_margin="10dp"
     android:id="@+id/cell_layout"
     android:background="@drawable/rippler_color1"
@@ -17,7 +17,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
         android:text="运动"
-        android:textSize="25sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="1dp"
@@ -36,7 +36,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:padding="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -44,64 +43,61 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="足球"
-                android:textSize="20dp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="发起人:"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/originator_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="潘博飞"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="活动时间:"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/start_time_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="待定"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="活动地点:"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/location_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="待定"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
 

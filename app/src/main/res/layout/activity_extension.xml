@@ -21,7 +21,7 @@
             android:background="@drawable/bg_color1"
             android:layout_height="200dp"
             android:layout_width="match_parent"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_marginBottom="20dp"
@@ -30,6 +30,25 @@
                 android:text="@{data.extension.name}"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content" />
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content">
+                <TextView
+                    android:layout_marginBottom="20dp"
+                    android:textColor="#fff"
+                    android:textSize="25sp"
+                    android:text="ID号:"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content" />
+                <TextView
+                    android:layout_marginBottom="20dp"
+                    android:textColor="#fff"
+                    android:textSize="25sp"
+                    android:text="@{String.valueOf(data.extension.ID)}"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -41,7 +60,7 @@
 
             <LinearLayout
                 android:background="@drawable/half_core"
-                android:layout_height="80dp"
+                android:layout_height="100dp"
                 android:layout_width="match_parent">
 
                 <LinearLayout
@@ -53,14 +72,14 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         android:textColor="@android:color/darker_gray"
                         android:text="发起人"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content" />
 
                     <TextView
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:text="@{data.extension.originator}"
                         android:textColor="#000"
                         android:layout_width="wrap_content"
@@ -76,14 +95,14 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         android:textColor="@android:color/darker_gray"
                         android:text="活动时间"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content" />
 
                     <TextView
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:text="@{data.extension.startTime}"
                         android:textColor="#000"
                         android:layout_width="wrap_content"
@@ -99,14 +118,14 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         android:textColor="@android:color/darker_gray"
                         android:text="活动地点"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content" />
 
                     <TextView
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:text="@{data.extension.location}"
                         android:textColor="#000"
                         android:layout_width="wrap_content"
@@ -122,14 +141,14 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         android:textColor="@android:color/darker_gray"
                         android:text="参与人数"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content" />
 
                     <TextView
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:text="@{String.valueOf(data.extension.number)}"
                         android:textColor="#000"
                         android:layout_width="wrap_content"

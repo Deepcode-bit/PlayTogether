@@ -3,6 +3,8 @@ package adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -24,11 +26,26 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
     private static final int TYPE_NORMAL=1;
     private static final int TYPE_HEAD=0;
 
+
     private onItemClickListener itemClickListener;
+    private onSearchButtonClickListener onSearchButClickListener;
+    private RadioGroup.OnCheckedChangeListener onCheckedChangeListener;
+
     private boolean hasHeadView;
 
     public void SetAllExtension(List<ExtensionModel> extensions){
         this.extensions=extensions;
+    }
+
+    public void SetSearchButListener(onSearchButtonClickListener listener){
+        this.onSearchButClickListener=listener;
+    }
+
+    public interface onSearchButtonClickListener{
+        void onSearchButtonClick(View v,String content);
+    }
+    public void SetonCheckChangeListener(RadioGroup.OnCheckedChangeListener listener){
+        this.onCheckedChangeListener=listener;
     }
 
     public void SetHeadView(boolean hasHeadView){
@@ -59,8 +76,18 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
-        if(getItemViewType(position)==TYPE_HEAD){
+        if(getItemViewType(position)==TYPE_HEAD) {
             holder.radioGroup.check(R.id.zero_radio_button);
+            holder.searchBut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onSearchButClickListener != null) {
+                        onSearchButClickListener.onSearchButtonClick(v, holder.searchBar.getText().toString());
+                    }
+                }
+            });
+            if (onCheckedChangeListener != null)
+                holder.radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
             return;
         }
         ExtensionModel extension=extensions.get(position);
@@ -97,6 +124,8 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
         TextView type,name,originator,startTime,location;
         LinearLayout cellLayout;
         RadioGroup radioGroup;
+        EditText searchBar;
+        Button searchBut;
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
             radioGroup=itemView.findViewById(R.id.head_radio_group);
@@ -106,6 +135,8 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
             originator=itemView.findViewById(R.id.originator_text);
             startTime=itemView.findViewById(R.id.start_time_text);
             location=itemView.findViewById(R.id.location_text);
+            searchBar=itemView.findViewById(R.id.extension_search_bar);
+            searchBut=itemView.findViewById(R.id.serch_but);
         }
     }
 }

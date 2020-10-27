@@ -22,7 +22,7 @@
     <RadioGroup
         android:id="@+id/radiogroup"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="50dp"
         android:background="#FEFEFE"
         android:orientation="horizontal"
         android:paddingTop="5dp"

@@ -8,7 +8,7 @@
             type="com.nepu.playtogether.HostActivity"/>
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="fragment.ExtensionFragment"
@@ -16,8 +16,9 @@
         android:background="@color/bg_gray">
 
         <RelativeLayout
+            android:id="@+id/title_bar"
             android:background="#FEFEFE"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_width="match_parent">
 
             <TextView
@@ -30,7 +31,7 @@
                 android:layout_width="wrap_content" />
             <TextView
                 android:onClick="@{data.extensionFragment.onPublicExtension}"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="10dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
@@ -40,11 +41,13 @@
                 android:layout_width="wrap_content" />
         </RelativeLayout>
         <TextView
+            android:layout_above="@id/ex_fresh_layout"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#DDDDDD" />
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     android:id="@+id/ex_fresh_layout"
+    android:layout_below="@+id/title_bar"
     android:layout_height="match_parent"
     android:layout_marginBottom="60dp"
     android:layout_width="match_parent">
@@ -53,5 +56,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    </LinearLayout>
+        <ProgressBar
+            android:layout_centerInParent="true"
+            android:id="@+id/progressBar"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+    </RelativeLayout>
 </layout>

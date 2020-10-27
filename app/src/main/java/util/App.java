@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.nepu.playtogether.R;
 
-import java.security.cert.Extension;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -35,6 +34,10 @@ public class App extends Application {
     public static MutableLiveData<UserModel> localUser=new MutableLiveData<>();
     //正在进行的活动(参加)
     public static List<ExtensionModel> ongoingExtensions;
+    //参加的活动
+    public static List<ExtensionModel> joinExtensions;
+    //创建的活动
+    public static List<ExtensionModel> createdExtensions;
     //消息集合
     public static List<MessageModel> messages;
 

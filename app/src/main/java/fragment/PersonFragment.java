@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.nepu.playtogether.ExtensionListActivity;
 import com.nepu.playtogether.HostActivity;
 import com.nepu.playtogether.MainActivity;
 import com.nepu.playtogether.R;
@@ -176,6 +177,25 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
     public void EnterCertification(View v){
         Intent intent=new Intent();
         intent.setClass(requireActivity(), CertificationActivity.class);
+        startActivity(intent);
+    }
+
+    public void EnterExtensionList(View v) {
+        String type = "";
+        switch (v.getId()) {
+            case R.id.join_list:
+                type = "join";
+                break;
+            case R.id.create_list:
+                type = "create";
+                break;
+            case R.id.ongoing_list:
+                type = "ongoing";
+                break;
+        }
+        Intent intent=new Intent();
+        intent.setClass(requireActivity(), ExtensionListActivity.class);
+        intent.putExtra("type",type);
         startActivity(intent);
     }
 }

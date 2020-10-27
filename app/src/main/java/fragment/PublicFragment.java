@@ -3,23 +3,23 @@ package fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.nepu.playtogether.R;
 import com.nepu.playtogether.databinding.FragmentPublicBinding;
-import com.nepu.playtogether.databinding.FragmentSelectBinding;
 
-import org.json.JSONException;
-
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 import model.ExtensionModel;
@@ -33,6 +33,7 @@ import view_model.PublicViewModel;
 public class PublicFragment extends Fragment {
 
     public PublicViewModel mViewModel;
+    public static MyHandler handler;
 
     public PublicFragment() {
         // Required empty public constructor
@@ -48,6 +49,12 @@ public class PublicFragment extends Fragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        handler=new MyHandler(this);
+    }
+
     public void OnBackClick(View v){
         requireActivity().onBackPressed();
     }
@@ -57,23 +64,36 @@ public class PublicFragment extends Fragment {
             Toast.makeText(requireActivity(),"活动信息不能为空",Toast.LENGTH_SHORT).show();
             return;
         }
-        ExtensionModel extension=new ExtensionModel(
-                mViewModel.extensionName.getValue(),
-                Objects.requireNonNull(App.localUser.getValue()).getUID(),
-                Objects.requireNonNull(mViewModel.typeSelectIndex.getValue()),
-                Objects.requireNonNull(App.localUser.getValue()).getUserName(),
-                mViewModel.extensionDate.getValue(),
-                mViewModel.extensionPlace.getValue());
-        //TODO:服务端请求添加活动
-        Intent intent=new Intent();
-        intent.putExtra("extension",extension);
-        requireActivity().setResult(0,intent);
-        try {
-            TcpClient.getInstance().sendJoinExtension(App.localUser.getValue().getUID(), extension.getID());
-            Toast.makeText(requireActivity(), "创建成功", Toast.LENGTH_SHORT).show();
-        }catch (Exception ex) {
-            Log.e("error", Objects.requireNonNull(ex.getMessage()));
+        App.mThreadPool.execute(mViewModel.addExtension);
+    }
+
+    public static class MyHandler extends Handler{
+        WeakReference<PublicFragment> publicFragment;
+        public static final int addExtension=0x001;
+
+        MyHandler(PublicFragment fragment) {
+            publicFragment = new WeakReference<>(fragment);
         }
-        requireActivity().finish();
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(publicFragment ==null)return;
+            if (msg.what == addExtension) {
+                FragmentActivity requireActivity = publicFragment.get().requireActivity();
+                Intent intent = new Intent();
+                ExtensionModel extension = (ExtensionModel) msg.obj;
+                intent.putExtra("extension", extension);
+                requireActivity.setResult(0, intent);
+                requireActivity.finish();
+                try {
+                    TcpClient.getInstance().sendJoinExtension(App.localUser.getValue().getUID(), extension.getID());
+                    Toast.makeText(requireActivity, "创建成功", Toast.LENGTH_SHORT).show();
+                    App.ongoingExtensions.add(extension);
+                } catch (Exception ex) {
+                    Toast.makeText(requireActivity, "创建失败", Toast.LENGTH_SHORT).show();
+                    Log.e("error", Objects.requireNonNull(ex.getMessage()));
+                }
+            }
+        }
     }
 }

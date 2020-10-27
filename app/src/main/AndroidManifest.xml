@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ChatRoomActivity"></activity>
+        <activity android:name=".ExtensionListActivity"></activity>
+        <activity android:name=".ChatRoomActivity" />
         <activity android:name=".CertificationActivity" />
         <activity android:name=".PublicActivity" />
         <activity android:name=".ExtensionActivity" />

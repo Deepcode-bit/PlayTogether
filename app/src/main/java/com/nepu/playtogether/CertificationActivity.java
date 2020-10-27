@@ -50,6 +50,14 @@ public class CertificationActivity extends AppCompatActivity {
     }
 
     public void onCertificationClick(View v){
+        if(App.localUser.getValue()==null){
+            Toast.makeText(this,"请先登录",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(App.localUser.getValue().getUserState()==1){
+            Toast.makeText(this,"您已认证",Toast.LENGTH_SHORT).show();
+            return;
+        }
         if(mViewModel.stuNumber.getValue().isEmpty() || mViewModel.stuPwd.getValue().isEmpty()){
             Toast.makeText(this,"学号和密码不能为空",Toast.LENGTH_SHORT).show();
             return;

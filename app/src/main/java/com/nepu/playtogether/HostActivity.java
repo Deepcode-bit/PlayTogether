@@ -5,19 +5,30 @@ import androidx.fragment.app.Fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import fragment.ExtensionFragment;
 import fragment.ForumFragment;
 import fragment.PersonFragment;
+import model.ExtensionModel;
 import model.UserModel;
 import util.App;
+import util.Connection;
 import util.Dao;
+import util.HandlerMsg;
 import util.TcpClient;
 
 public class HostActivity extends AppCompatActivity {
@@ -61,13 +72,97 @@ public class HostActivity extends AppCompatActivity {
 
     private void InitData(){
         UserModel user=new Dao(this).getLocalUser();
+        App.ongoingExtensions=new ArrayList<>();
+        App.createdExtensions=new ArrayList<>();
+        App.joinExtensions=new ArrayList<>();
         if(user!=null){
             App.localUser.setValue(user);
             TcpClient.getInstance().startClient(App.IPAddress,App.port);
+            App.mThreadPool.execute(getOngoingExtensions);
+            App.mThreadPool.execute(getCreatedExtensions);
+            App.mThreadPool.execute(getJoinExtensions);
         }
-        App.ongoingExtensions=new ArrayList<>();
-        //TODO:向服务端请求数据
         App.messages=new ArrayList<>();
-        //TODO:向本地请求数据
     }
+
+    private Runnable getOngoingExtensions=new Runnable() {
+        @Override
+        public void run() {
+            UserModel user = App.localUser.getValue();
+            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getRunningByUid" + user.getUID());
+            if (resultJson == null) return;
+            try {
+                Gson gson = new Gson();
+                if (resultJson.get("data").toString().isEmpty()) return;
+                ArrayList<ExtensionModel> extensionModels = new ArrayList<>();
+                JSONArray jsonArray = resultJson.getJSONArray("data");
+                //循环遍历
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    ExtensionModel extension = gson.fromJson(jsonObject.toString(), ExtensionModel.class);
+                    extensionModels.add(extension);
+                }
+                //设置数据源
+                App.ongoingExtensions = extensionModels;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+    private Runnable getCreatedExtensions=new Runnable() {
+        @Override
+        public void run() {
+            UserModel user = App.localUser.getValue();
+            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getByUid" + user.getUID());
+            if (resultJson == null) return;
+            try {
+                Gson gson = new Gson();
+                if (resultJson.get("data").toString().isEmpty()) return;
+                ArrayList<ExtensionModel> extensionModels = new ArrayList<>();
+                JSONArray jsonArray = resultJson.getJSONArray("data");
+                //循环遍历
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    ExtensionModel extension = gson.fromJson(jsonObject.toString(), ExtensionModel.class);
+                    extensionModels.add(extension);
+                }
+                //设置数据源
+                App.createdExtensions = extensionModels;
+                if (App.localUser.getValue() != null)
+                    App.localUser.getValue().setCreateNum(extensionModels.size());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+    private Runnable getJoinExtensions=new Runnable() {
+        @Override
+        public void run() {
+            UserModel user = App.localUser.getValue();
+            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getJoinByUid" + user.getUID());
+            if (resultJson == null) return;
+            try {
+                Gson gson = new Gson();
+                if (resultJson.get("data").toString().isEmpty()) return;
+                ArrayList<ExtensionModel> extensionModels = new ArrayList<>();
+                JSONArray jsonArray = resultJson.getJSONArray("data");
+                //循环遍历
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    ExtensionModel extension = gson.fromJson(jsonObject.toString(), ExtensionModel.class);
+                    extensionModels.add(extension);
+                }
+                //设置数据源
+                App.joinExtensions = extensionModels;
+                if (App.localUser.getValue() != null)
+                    App.localUser.getValue().setJoinNum(extensionModels.size());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }
