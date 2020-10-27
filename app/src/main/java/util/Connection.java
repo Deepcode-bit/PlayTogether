@@ -115,8 +115,8 @@ public class Connection {
             is=DoGet(path,params);
         if(is!=null) {
             try {
-                byte[] buffer = new byte[1024];
-                int len = is.read(buffer, 0, 1024);
+                byte[] buffer = new byte[1024 * 10];
+                int len = is.read(buffer, 0, 10240);
                 if (len != -1) {
                     String result = new String(buffer, 0, len, StandardCharsets.UTF_8);
                     Log.i("Test", result);

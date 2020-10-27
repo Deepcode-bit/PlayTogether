@@ -95,7 +95,7 @@ public class LoginFragment extends Fragment {
                         throw new Exception("服务器连接超时");
                     final String msg=json.get("msg").toString();
                     if(msg.equals("success")) {
-                        final UserModel user = new Gson().fromJson(json.get("user").toString(), UserModel.class);
+                        final UserModel user = new Gson().fromJson(json.get("data").toString(), UserModel.class);
                         handler.sendMessage(HandlerMsg.getMsg(0x002,user));
                         Dao dao=new Dao(getActivity());
                         if(dao.getLocalUser()!=null){

@@ -105,7 +105,16 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
             Toast.makeText(requireActivity(), "请先认证", Toast.LENGTH_SHORT).show();
             return;
         }
-        App.mThreadPool.execute(mViewModel.getAllExtension);
+        progressBar.setVisibility(View.VISIBLE);
+        App.mThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                    App.mThreadPool.execute(mViewModel.getAllExtension);
+                }catch (Exception ex){}
+            }
+        });
     }
 
     @Override
@@ -215,6 +224,12 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
             extensionFragment.get().progressBar.setVisibility(View.INVISIBLE);
             switch (msg.what) {
                 case extensionDataChange:
+                    if(msg.obj!=null) {
+                        List<ExtensionModel> extensionModels = (List<ExtensionModel>) msg.obj;
+                        extensionFragment.get().mViewModel.extensions.setValue(extensionModels);
+                        extensionFragment.get().mAdapter.SetAllExtension(extensionModels);
+                    }
+
                     extensionFragment.get().mAdapter.notifyDataSetChanged();
                     break;
                 case notifyError:
@@ -222,6 +237,7 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
                     if (extensionFragment.get().getContext() != null)
                         Toast.makeText(extensionFragment.get().getContext(), errorMsg, Toast.LENGTH_SHORT).show();
                     break;
+                default:break;
             }
         }
     }

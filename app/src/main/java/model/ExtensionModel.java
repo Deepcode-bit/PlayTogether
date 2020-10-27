@@ -3,8 +3,8 @@ package model;
 import java.io.Serializable;
 
 public class ExtensionModel implements Serializable {
-    private int ID;
-    private int UID;
+    private int id;
+    private int uid;
     private int state;
 
     private String name;
@@ -26,7 +26,7 @@ public class ExtensionModel implements Serializable {
     public ExtensionModel(String name, int UID,int type, String originator, String startTime, String location) {
         this.name = name;
         this.type = type;
-        this.UID=UID;
+        this.uid=UID;
         this.originator = originator;
         this.startTime = startTime;
         this.location = location;
@@ -45,7 +45,7 @@ public class ExtensionModel implements Serializable {
     }
 
     public int getID() {
-        return ID;
+        return id;
     }
 
     public String getLocation() {
@@ -65,10 +65,10 @@ public class ExtensionModel implements Serializable {
     }
 
     public int getUID() {
-        return UID;
+        return uid;
     }
 
     public void setUID(int UID) {
-        this.UID = UID;
+        this.uid = UID;
     }
 }

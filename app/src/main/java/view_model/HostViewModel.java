@@ -101,10 +101,9 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
                     ExtensionModel extension = gson.fromJson(jsonObject.toString(), ExtensionModel.class);
                     extensionModels.add(extension);
                 }
-                //设置数据源
-                extensions.setValue(extensionModels);
+                Message msg = HandlerMsg.getMsg(ExtensionFragment.extensionDataChange, extensionModels);
                 //通知UI更新
-                ExtensionFragment.handler.sendEmptyMessage(ExtensionFragment.extensionDataChange);
+                ExtensionFragment.handler.sendMessage(msg);
             } catch (JSONException e) {
                 e.printStackTrace();
                 Bundle bundle=new Bundle();
