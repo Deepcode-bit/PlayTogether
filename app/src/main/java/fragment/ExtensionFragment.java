@@ -4,6 +4,7 @@ import android.database.Observable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
     public static MyHandler handler;
     public static final int extensionDataChange=0x001;
     public static final int notifyError=0x002;
+    public static final int personalDataChange=0x003;
 
     public ExtensionFragment() {
         // Required empty public constructor
@@ -80,6 +82,7 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         handler = new MyHandler(this);
+        mViewModel.type=-1;
         progressBar = requireView().findViewById(R.id.progressBar);
         refreshLayout = requireView().findViewById(R.id.ex_fresh_layout);
         recyclerView = requireActivity().findViewById(R.id.recycler_view);
@@ -120,7 +123,11 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
             Toast.makeText(requireActivity(), "请先认证", Toast.LENGTH_SHORT).show();
             return;
         }
-        App.mThreadPool.execute(mViewModel.getAllExtension);
+        if (mViewModel.type == -1) {
+            App.mThreadPool.execute(mViewModel.getAllExtension);
+        } else {
+            App.mThreadPool.execute(mViewModel.getExtensionsByType);
+        }
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -174,7 +181,7 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
         if (content == null || content.isEmpty()) return;
         int id = Integer.parseInt(content);
         if (id == 0) return;
-        mViewModel.openChatUID = id;
+        mViewModel.searchID = id;
         App.mThreadPool.execute(mViewModel.getExtensionByID);
         progressBar.setVisibility(View.VISIBLE);
     }
@@ -182,12 +189,17 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         int id = 0;
-        //TODO:标签为全部时获取全部活动
+        if(checkedId==R.id.zero_radio_button) {
+            App.mThreadPool.execute(mViewModel.getAllExtension);
+            progressBar.setVisibility(View.VISIBLE);
+            mViewModel.type = -1;
+            return;
+        }
         switch (checkedId){
-            case R.id.sport_radio:id=0;break;
-            case R.id.lean_radio:id=1;break;
-            case R.id.life_radio:id=2;break;
-            case R.id.game_radio:id=3;break;
+            case R.id.sport_radio:id=App.sport;break;
+            case R.id.lean_radio:id=App.study;break;
+            case R.id.life_radio:id=App.life;break;
+            case R.id.game_radio:id=App.game;break;
         }
         //获取数据源
         if (App.localUser.getValue() == null) {
@@ -216,18 +228,19 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
             extensionFragment.get().progressBar.setVisibility(View.INVISIBLE);
             switch (msg.what) {
                 case extensionDataChange:
-                    if(msg.obj!=null) {
-                        List<ExtensionModel> extensionModels = (List<ExtensionModel>) msg.obj;
-                        extensionFragment.get().mViewModel.extensions.setValue(extensionModels);
-                        extensionFragment.get().mAdapter.SetAllExtension(extensionModels);
-                    }
-
+                    //插入头数据
+                    extensionFragment.get().mViewModel.extensions.getValue().add(0,null);
                     extensionFragment.get().mAdapter.notifyDataSetChanged();
                     break;
                 case notifyError:
                     String errorMsg = msg.getData().getString("error");
                     if (extensionFragment.get().getContext() != null)
                         Toast.makeText(extensionFragment.get().getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                    break;
+                case personalDataChange:
+                    extensionFragment.get().mViewModel.underNum.setValue(App.ongoingExtensions.size());
+                    extensionFragment.get().mViewModel.createNum.setValue(App.createdExtensions.size());
+                    extensionFragment.get().mViewModel.joinNum.setValue(App.joinExtensions.size());
                     break;
                 default:break;
             }

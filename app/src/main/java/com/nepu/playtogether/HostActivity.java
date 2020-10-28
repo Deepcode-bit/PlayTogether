@@ -89,21 +89,21 @@ public class HostActivity extends AppCompatActivity {
         @Override
         public void run() {
             UserModel user = App.localUser.getValue();
-            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getRunningByUid" + user.getUID());
+            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getRunningByUid/" + user.getUID());
             if (resultJson == null) return;
             try {
                 Gson gson = new Gson();
                 if (resultJson.get("data").toString().isEmpty()) return;
-                ArrayList<ExtensionModel> extensionModels = new ArrayList<>();
+                App.ongoingExtensions.clear();
                 JSONArray jsonArray = resultJson.getJSONArray("data");
                 //循环遍历
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     ExtensionModel extension = gson.fromJson(jsonObject.toString(), ExtensionModel.class);
-                    extensionModels.add(extension);
+                    App.ongoingExtensions.add(extension);
                 }
-                //设置数据源
-                App.ongoingExtensions = extensionModels;
+                if (ExtensionFragment.handler != null)
+                    ExtensionFragment.handler.sendEmptyMessage(ExtensionFragment.personalDataChange);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -115,7 +115,7 @@ public class HostActivity extends AppCompatActivity {
         @Override
         public void run() {
             UserModel user = App.localUser.getValue();
-            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getByUid" + user.getUID());
+            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getByUid/" + user.getUID());
             if (resultJson == null) return;
             try {
                 Gson gson = new Gson();
@@ -143,7 +143,7 @@ public class HostActivity extends AppCompatActivity {
         @Override
         public void run() {
             UserModel user = App.localUser.getValue();
-            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getJoinByUid" + user.getUID());
+            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getJoinByUid/" + user.getUID());
             if (resultJson == null) return;
             try {
                 Gson gson = new Gson();

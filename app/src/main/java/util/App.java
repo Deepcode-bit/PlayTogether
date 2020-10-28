@@ -19,9 +19,9 @@ public class App extends Application {
     public static final int sport=0,study=1,life=2,game=3;
     public static final int post=1,get=2;
     //不带路由的IP地址和端口号
-    public static final String netUrl="http://192.168.1.103:8080";
+    public static final String netUrl="http://188.131.156.21:8080";
     //教务系统API接口
-    public static final String EASUrl="http://jwgl.nepu.edu.cn/app.do";
+    public static final String EASUrl="http://jwgl.nepu.edu.cn/new/login";
     //IM TCP连接的地址和接口
     //TODO:内网IP，记得改IP地址
     public static final String IPAddress="192.168.1.106";

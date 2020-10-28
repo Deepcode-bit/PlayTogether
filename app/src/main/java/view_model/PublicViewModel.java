@@ -56,7 +56,7 @@ public class PublicViewModel extends AndroidViewModel {
             };
             Message msg = HandlerMsg.getMsg(PublicFragment.MyHandler.addExtension, extension);
             PublicFragment.handler.sendMessage(msg);
-            Connection.getJson(App.get, App.netUrl, params, "/extension/save");
+            Connection.getJson(App.post, App.netUrl, params, "/extension/save");
         }
     };
 }

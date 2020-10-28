@@ -26,6 +26,7 @@ import fragment.ExtensionFragment;
 import fragment.PublicFragment;
 import model.ExtensionModel;
 import model.MessageModel;
+import okhttp3.FormBody;
 import util.App;
 import util.Connection;
 import util.HandlerMsg;
@@ -88,22 +89,21 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
     public Runnable getAllExtension = new Runnable() {
         @Override
         public void run() {
-            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(),"/extension/getAll");
+            JSONObject resultJson = Connection.getJson(App.netUrl,"/extension/getAll");
             try {
                 Gson gson = new Gson();
                 if(resultJson==null) throw new JSONException("获取活动为空");
                 if(resultJson.get("data").toString().isEmpty()) throw new JSONException("获取活动为空");
-                ArrayList<ExtensionModel> extensionModels = new ArrayList<>();
                 JSONArray jsonArray = resultJson.getJSONArray("data");
+                extensions.getValue().clear();
                 //循环遍历
                 for (int i=0;i<jsonArray.length();i++) {
                     JSONObject jsonObject=jsonArray.getJSONObject(i);
                     ExtensionModel extension = gson.fromJson(jsonObject.toString(), ExtensionModel.class);
-                    extensionModels.add(extension);
+                    extensions.getValue().add(extension);
                 }
-                Message msg = HandlerMsg.getMsg(ExtensionFragment.extensionDataChange, extensionModels);
                 //通知UI更新
-                ExtensionFragment.handler.sendMessage(msg);
+                ExtensionFragment.handler.sendEmptyMessage(ExtensionFragment.extensionDataChange);
             } catch (JSONException e) {
                 e.printStackTrace();
                 Bundle bundle=new Bundle();
@@ -118,22 +118,22 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
         @Override
         public void run() {
             HashMap<String, String> params = new HashMap<>();
-            params.put("eid", String.valueOf(searchID));
             try {
                 JSONObject json = Connection.getJson(App.get, App.netUrl, params, "/extension/getByEid/" + searchID);
                 if (json == null) throw new JSONException("获取活动为空");
                 if (json.get("data").toString().isEmpty()) throw new JSONException("获取活动为空");
                 ExtensionModel extension = new Gson().fromJson(json.get("data").toString(), ExtensionModel.class);
-                ArrayList<ExtensionModel> extensionModels = new ArrayList<>();
-                extensionModels.add(extension);
-                extensions.setValue(extensionModels);
+                if(extension==null)throw new JSONException("获取活动为空");
+                extensions.getValue().clear();
+                extensions.getValue().add(extension);
+                //通知UI更新
                 ExtensionFragment.handler.sendEmptyMessage(ExtensionFragment.extensionDataChange);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 Bundle bundle = new Bundle();
                 bundle.putString("error", "获取失败");
                 Message msg = HandlerMsg.getMsg(ExtensionFragment.notifyError, bundle);
-                ExtensionFragment.handler.sendMessage(msg);
+                //ExtensionFragment.handler.sendMessage(msg);
             }
         }
     };
@@ -142,22 +142,19 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
         @Override
         public void run() {
             HashMap<String,String> params=new HashMap<>();
-            params.put("tag",String.valueOf(type));
             JSONObject resultJson = Connection.getJson(App.get, App.netUrl, params,"/extension/getByTag/"+type);
             try {
                 if(resultJson==null) throw new JSONException("获取活动为空");
                 Gson gson = new Gson();
                 if(resultJson.get("data").toString().isEmpty()) throw new JSONException("获取活动为空");
-                ArrayList<ExtensionModel> extensionModels = new ArrayList<>();
                 JSONArray jsonArray = resultJson.getJSONArray("data");
+                extensions.getValue().clear();
                 //循环遍历
                 for (int i=0;i<jsonArray.length();i++) {
                     JSONObject jsonObject=jsonArray.getJSONObject(i);
                     ExtensionModel extension = gson.fromJson(jsonObject.toString(), ExtensionModel.class);
-                    extensionModels.add(extension);
+                    extensions.getValue().add(extension);
                 }
-                //设置数据源
-                extensions.setValue(extensionModels);
                 //通知UI更新
                 ExtensionFragment.handler.sendEmptyMessage(ExtensionFragment.extensionDataChange);
             } catch (JSONException e) {

@@ -24,9 +24,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import adapter.MemberAdapter;
@@ -49,6 +52,7 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
     private static MyHandler handler;
     //此数据作为ViewModel
     public MutableLiveData<ExtensionModel> extension;
+    public MutableLiveData<String> time;
 
     ActivityExtensionBinding mBinding;
 
@@ -75,13 +79,22 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
         extension.setValue((ExtensionModel) bundle.getSerializable("extension"));
         joinBut = findViewById(R.id.join_but);
         chatBut=findViewById(R.id.chat_but);
-        if(extension!=null) {
+        if(extension!=null && extension.getValue()!=null) {
             int type = extension.getValue().getType();
+            time=new MutableLiveData<>(extension.getValue().getStartTime());
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+                Date date = sdf.parse(extension.getValue().getStartTime());
+                if (date != null) time.setValue(new SimpleDateFormat("HH:mm", Locale.CHINA).format(date));
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
             findViewById(R.id.head_layout).setBackgroundResource(App.getExtensionDrawable(type));
             if(extension.getValue().getUID()== Objects.requireNonNull(App.localUser.getValue()).getUID()){
                 joinBut.setText("取消活动");
                 joinBut.setBackgroundResource(R.drawable.corn_button2);
                 chatBut.setEnabled(true);
+                return;
             }
             for(ExtensionModel ex:App.ongoingExtensions){
                 if(ex.getUID()==extension.getValue().getUID()){
@@ -125,13 +138,8 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
     }
 
     public void onJoinExtension(View v) throws JSONException {
-        final UserModel user=App.localUser.getValue();
         if(joinBut.getText().equals("取消活动")){
             App.mThreadPool.execute(cancelExtension);
-            //IM服务器请求
-            TcpClient.getInstance().cancelExtension(extension.getValue().getID());
-            Toast.makeText(this,"已取消",Toast.LENGTH_SHORT).show();
-            this.finish();
         }else if(joinBut.getText().equals("加入活动")){
             App.mThreadPool.execute(joinExtension);
         }else if(joinBut.getText().equals("退出活动")){
@@ -161,12 +169,25 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
             final UserModel user=App.localUser.getValue();
             final String eid=String.valueOf(extension.getValue().getID());
             final String uid=String.valueOf(user.getUID());
-            HashMap<String,String> params=new HashMap<String, String>(){
-                {
-                    put("eid",eid);
-                    put("uid",uid);
-                }};
-            Connection.getJson(App.post,App.netUrl,params,"/ue/add/"+uid+"/"+eid);
+            try {
+                HashMap<String, String> params = new HashMap<>();
+                JSONObject json = Connection.getJson(App.get, App.netUrl, params, "/ue/add/" + uid + "/" + eid);
+                //通知UI更新
+                if (json == null || !json.get("msg").equals("添加成功")) {
+                    Bundle bundle=new Bundle();
+                    bundle.putString("error","加入失败");
+                    Message msg = HandlerMsg.getMsg(MyHandler.notifyError, bundle);
+                    ExtensionActivity.handler.sendMessage(msg);
+                    return;
+                }
+                ExtensionActivity.handler.sendEmptyMessage(MyHandler.joinExtension);
+            }catch (Exception ex){
+                ex.printStackTrace();
+                Bundle bundle=new Bundle();
+                bundle.putString("error","加入失败");
+                Message msg = HandlerMsg.getMsg(MyHandler.notifyError, bundle);
+                ExtensionActivity.handler.sendMessage(msg);
+            }
         }
     };
 
@@ -174,9 +195,22 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
         @Override
         public void run() {
             final String eid = String.valueOf(extension.getValue().getID());
-            HashMap<String, String> params = new HashMap<>();
-            params.put("eid", eid);
-            Connection.getJson(App.post, App.netUrl, params, "/ue/deleteByEid/" + eid);
+            try {
+                HashMap<String, String> params = new HashMap<>();
+                JSONObject json = Connection.getJson(App.post, App.netUrl, params, "/extension/over/" + eid);
+                if (json == null || !json.get("msg").equals("取消成功")) {
+                    Bundle bundle=new Bundle();
+                    bundle.putString("error","取消失败");
+                    Message msg = HandlerMsg.getMsg(MyHandler.notifyError, bundle);
+                    ExtensionActivity.handler.sendMessage(msg);
+                    return;
+                }
+                //通知UI更新
+                ExtensionActivity.handler.sendEmptyMessage(MyHandler.CancelExtension);
+            }catch (Exception ex){
+                ex.printStackTrace();
+
+            }
         }
     };
 
@@ -186,13 +220,25 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
             final UserModel user = App.localUser.getValue();
             final String eid = String.valueOf(extension.getValue().getID());
             final String uid = String.valueOf(user.getUID());
-            HashMap<String, String> params = new HashMap<String, String>() {
-                {
-                    put("eid", eid);
-                    put("uid", uid);
+            try {
+                HashMap<String, String> params = new HashMap<>();
+                JSONObject json = Connection.getJson(App.post, App.netUrl, params, "/ue/exit/" + uid + "/" + eid);
+                if (json == null || !json.get("msg").equals("退出成功")) {
+                    Bundle bundle=new Bundle();
+                    bundle.putString("error","退出失败");
+                    Message msg = HandlerMsg.getMsg(MyHandler.notifyError, bundle);
+                    ExtensionActivity.handler.sendMessage(msg);
+                    return;
                 }
-            };
-            Connection.getJson(App.post, App.netUrl, params, "/extension/exit/" + uid + "/" + eid);
+                //通知UI更新
+                ExtensionActivity.handler.sendEmptyMessage(MyHandler.exitExtension);
+            }catch (Exception ex){
+                ex.printStackTrace();
+                Bundle bundle=new Bundle();
+                bundle.putString("error","退出失败");
+                Message msg = HandlerMsg.getMsg(MyHandler.notifyError, bundle);
+                ExtensionActivity.handler.sendMessage(msg);
+            }
         }
     };
 
@@ -235,6 +281,7 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
         static final int notifyError = 0x002;
         static final int exitExtension = 0x003;
         static final int changeData=0x004;
+        static final int CancelExtension=0x005;
 
         MyHandler(ExtensionActivity activity) {
             extensionActivity = new WeakReference<>(activity);
@@ -249,6 +296,7 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                         UserModel user = App.localUser.getValue();
                         //IM服务器请求
                         TcpClient.getInstance().sendJoinExtension(user.getUID(), extensionActivity.get().extension.getValue().getID());
+                        //本地操作
                         App.ongoingExtensions.add(extensionActivity.get().extension.getValue());
                         extensionActivity.get().joinBut.setBackgroundResource(R.drawable.corn_button2);
                         extensionActivity.get().joinBut.setText("退出活动");
@@ -289,6 +337,17 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                     break;
                 case changeData:
                     extensionActivity.get().memberAdapter.notifyDataSetChanged();
+                    break;
+                case CancelExtension:
+                    //IM服务器请求
+                    try {
+                        //本地操作
+                        TcpClient.getInstance().cancelExtension(extensionActivity.get().extension.getValue().getID());
+                        Toast.makeText(extensionActivity.get(),"已取消",Toast.LENGTH_SHORT).show();
+                        extensionActivity.get().finish();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
         }

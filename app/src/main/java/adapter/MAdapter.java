@@ -14,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nepu.playtogether.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import model.ExtensionModel;
 import util.App;
@@ -76,8 +79,7 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
-        if(getItemViewType(position)==TYPE_HEAD) {
-            holder.radioGroup.check(R.id.zero_radio_button);
+        if (getItemViewType(position) == TYPE_HEAD) {
             holder.searchBut.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -90,18 +92,26 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
                 holder.radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
             return;
         }
-        ExtensionModel extension=extensions.get(position);
+        ExtensionModel extension = extensions.get(position);
         holder.type.setText(App.getExtensionType(extension.getType()));
         holder.cellLayout.setBackgroundResource(App.getExtensionDrawable(extension.getType()));
         holder.name.setText(extension.getName());
         holder.originator.setText(extension.getOriginator());
-        holder.startTime.setText(extension.getStartTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+        String time=extension.getStartTime();
+        try {
+            Date date = sdf.parse(extension.getStartTime());
+            if (date != null) time = sdf.format(date);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        holder.startTime.setText(time);
         holder.location.setText(extension.getLocation());
-        if(itemClickListener!=null){
+        if (itemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemClickListener.onItemClick(v,holder.getLayoutPosition());
+                    itemClickListener.onItemClick(v, holder.getLayoutPosition());
                 }
             });
         }
@@ -128,15 +138,17 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
         Button searchBut;
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            radioGroup=itemView.findViewById(R.id.head_radio_group);
-            cellLayout=itemView.findViewById(R.id.cell_layout);
-            type=itemView.findViewById(R.id.type_text);
-            name=itemView.findViewById(R.id.name_text);
-            originator=itemView.findViewById(R.id.originator_text);
-            startTime=itemView.findViewById(R.id.start_time_text);
-            location=itemView.findViewById(R.id.location_text);
-            searchBar=itemView.findViewById(R.id.extension_search_bar);
-            searchBut=itemView.findViewById(R.id.serch_but);
+            radioGroup = itemView.findViewById(R.id.head_radio_group);
+            if (radioGroup != null)
+                radioGroup.check(R.id.zero_radio_button);
+            cellLayout = itemView.findViewById(R.id.cell_layout);
+            type = itemView.findViewById(R.id.type_text);
+            name = itemView.findViewById(R.id.name_text);
+            originator = itemView.findViewById(R.id.originator_text);
+            startTime = itemView.findViewById(R.id.start_time_text);
+            location = itemView.findViewById(R.id.location_text);
+            searchBar = itemView.findViewById(R.id.extension_search_bar);
+            searchBut = itemView.findViewById(R.id.serch_but);
         }
     }
 }

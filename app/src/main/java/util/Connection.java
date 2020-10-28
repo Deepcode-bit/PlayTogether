@@ -7,9 +7,12 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.annotation.ElementType;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -86,13 +89,13 @@ public class Connection {
         return null;
     }
 
-    private static InputStream OKHttpDoPost(String path, FormBody.Builder params) {
+    private static InputStream OKHttpDoGet(String path, FormBody.Builder params) {
         OkHttpClient client = new OkHttpClient();//创建OkHttpClient对象。
         FormBody.Builder formBody = new FormBody.Builder();//创建表单请求体
         try {
             Request request = new Request.Builder()//创建Request 对象。
                     .url(path)
-                    .post(params.build())//传递请求体
+                    .get()//传递请求体
                     .build();
             Response response = client.newCall(request).execute();//得到Response 对象
             if (response.isSuccessful()) {
@@ -105,26 +108,69 @@ public class Connection {
         return null;
     }
 
+    public static JSONObject getJson(String path,String route) {
+        InputStream is = null;
+        if (route != null)
+            path += route;
+        //设置30次查错机会
+        int errorTime=0;
+        while (true) {
+            is = OKHttpDoGet(path, new FormBody.Builder());
+            if (is != null) {
+                try {
+                    byte[] buffer = new byte[1024 * 10];
+                    int len = is.read(buffer);
+                    if (len != -1) {
+                        String result = new String(buffer, 0, len, StandardCharsets.UTF_8);
+                        Log.i("Test", result);
+                        return new JSONObject(result);
+                    }
+                } catch (JSONException ex) {
+                    //值取不对，重来!!!
+                    errorTime++;
+                    ex.printStackTrace();
+                    Log.i("Exception", ex.toString());
+                    if(errorTime>=30)break;
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    Log.i("Exception", ex.toString());
+                    break;
+                }
+            }
+        }
+        return null;
+    }
+
+
     public static JSONObject getJson(int type,String path,Map<String,String> params,String route) {
         InputStream is = null;
         if (route != null)
             path += route;
-        if(type==1)
-            is=DoPost(path,params);
-        else if(type==2)
-            is=DoGet(path,params);
-        if(is!=null) {
-            try {
-                byte[] buffer = new byte[1024 * 10];
-                int len = is.read(buffer, 0, 10240);
-                if (len != -1) {
-                    String result = new String(buffer, 0, len, StandardCharsets.UTF_8);
-                    Log.i("Test", result);
-                    return new JSONObject(result);
+        int errorTime=0;
+        while (true) {
+            if (type == 1)
+                is = DoPost(path, params);
+            else if (type == 2)
+                is = DoGet(path, params);
+            if (is != null) {
+                try {
+                    byte[] buffer = new byte[1024 * 10];
+                    int len = is.read(buffer);
+                    if (len != -1) {
+                        String result = new String(buffer, 0, len, StandardCharsets.UTF_8);
+                        Log.i("Test", result);
+                        return new JSONObject(result);
+                    }
+                } catch (JSONException ex) {
+                    errorTime++;
+                    ex.printStackTrace();
+                    Log.i("Exception", ex.toString());
+                    if(errorTime>=30)break;
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    Log.i("Exception", ex.toString());
+                    break;
                 }
-            } catch (IOException | JSONException ex) {
-                ex.printStackTrace();
-                Log.i("Exception",ex.toString());
             }
         }
         return null;

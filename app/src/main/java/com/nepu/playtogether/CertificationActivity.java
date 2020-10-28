@@ -54,18 +54,17 @@ public class CertificationActivity extends AppCompatActivity {
             Toast.makeText(this,"请先登录",Toast.LENGTH_SHORT).show();
             return;
         }
-        if(App.localUser.getValue().getUserState()==1){
-            Toast.makeText(this,"您已认证",Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        if(App.localUser.getValue().getUserState()==1){
+//            Toast.makeText(this,"您已认证",Toast.LENGTH_SHORT).show();
+//            return;
+//        }
         if(mViewModel.stuNumber.getValue().isEmpty() || mViewModel.stuPwd.getValue().isEmpty()){
             Toast.makeText(this,"学号和密码不能为空",Toast.LENGTH_SHORT).show();
             return;
         }
         final HashMap<String,String> params=new HashMap<String,String>(){
             {
-                put("method","authUser");
-                put("xh", mViewModel.stuNumber.getValue());
+                put("account", mViewModel.stuNumber.getValue());
                 put("pwd",mViewModel.stuPwd.getValue());
             }
         };
@@ -74,7 +73,7 @@ public class CertificationActivity extends AppCompatActivity {
             public void run() {
                 try{
                     //教务系统验证
-                    JSONObject json= Connection.getJson(App.get,App.EASUrl,params,null);
+                    JSONObject json= Connection.getJson(App.post,App.EASUrl,params,null);
                     String msg=json.getString("msg");
                     if(msg.equals("登录成功")){
                         String SID=mViewModel.stuNumber.getValue();
