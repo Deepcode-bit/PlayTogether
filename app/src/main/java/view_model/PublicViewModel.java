@@ -1,19 +1,21 @@
 package view_model;
 
 import android.app.Application;
-import android.os.Bundle;
+import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 
 import fragment.PublicFragment;
@@ -24,16 +26,22 @@ import util.HandlerMsg;
 
 public class PublicViewModel extends AndroidViewModel {
     public MutableLiveData<String> extensionName;
-    public MutableLiveData<String> extensionDate;
+    public String extensionDate;
+    public MutableLiveData<String> year,month,date,time;
     public MutableLiveData<String> extensionPlace;
     public MutableLiveData<Integer> typeSelectIndex;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public PublicViewModel(@NonNull Application application) {
         super(application);
+        final Calendar mCalendar=Calendar.getInstance();
+        year=new MutableLiveData<>(String.valueOf(mCalendar.get(Calendar.YEAR)));
+        month=new MutableLiveData<>(String.valueOf(mCalendar.get(Calendar.MONTH)+1));
+        date=new MutableLiveData<>(String.valueOf(mCalendar.get(Calendar.DATE)));
         extensionName=new MutableLiveData<>("");
-        extensionDate=new MutableLiveData<>("");
         extensionPlace=new MutableLiveData<>("");
         typeSelectIndex=new MutableLiveData<>(0);
+        time=new MutableLiveData<>("");
     }
 
     /**
@@ -47,7 +55,7 @@ public class PublicViewModel extends AndroidViewModel {
                     Objects.requireNonNull(App.localUser.getValue()).getUID(),
                     Objects.requireNonNull(typeSelectIndex.getValue()),
                     Objects.requireNonNull(App.localUser.getValue()).getUserName(),
-                    extensionDate.getValue(),
+                    extensionDate,
                     extensionPlace.getValue());
             HashMap<String,String> params=new HashMap<String, String>(){
                 {

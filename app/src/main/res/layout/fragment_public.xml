@@ -49,20 +49,87 @@
                     android:textSize="18sp"
                     android:layout_height="45dp"
                     android:layout_width="200dp" />
-                <EditText
-                    android:text="@={data.mViewModel.extensionDate}"
-                    android:theme="@style/MyEditText"
+                <LinearLayout
                     android:layout_margin="10dp"
-                    android:hint="请输入活动时间"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent">
+                <EditText
+                    android:maxLength="4"
+                    android:gravity="center"
+                    android:id="@+id/date_picker_year"
+                    android:text="@={data.mViewModel.year}"
+                    android:theme="@style/MyEditText"
                     android:inputType="datetime"
                     android:padding="10dp"
                     android:singleLine="true"
                     android:textColorHint="@color/light_gray"
                     android:textColor="#000"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:layout_height="45dp"
-                    android:layout_width="match_parent" />
-
+                    android:layout_width="0dp"
+                    android:layout_weight="2"/>
+                    <TextView
+                        android:textColor="#000"
+                        android:textSize="15sp"
+                        android:text="年"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <EditText
+                        android:maxLength="2"
+                        android:gravity="center"
+                        android:id="@+id/date_picker_month"
+                        android:text="@={data.mViewModel.month}"
+                        android:theme="@style/MyEditText"
+                        android:inputType="datetime"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/light_gray"
+                        android:textColor="#000"
+                        android:textSize="14sp"
+                        android:layout_height="45dp"
+                        android:layout_width="wrap_content" />
+                    <TextView
+                        android:textColor="#000"
+                        android:textSize="15sp"
+                        android:text="月"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <EditText
+                        android:maxLength="2"
+                        android:gravity="center"
+                        android:id="@+id/date_picker"
+                        android:text="@={data.mViewModel.date}"
+                        android:theme="@style/MyEditText"
+                        android:inputType="datetime"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/light_gray"
+                        android:textColor="#000"
+                        android:textSize="14sp"
+                        android:layout_height="45dp"
+                        android:layout_width="wrap_content"/>
+                    <TextView
+                        android:textColor="#000"
+                        android:textSize="15sp"
+                        android:text="日"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <EditText
+                        android:gravity="center"
+                        android:id="@+id/date_picker_time"
+                        android:text="@={data.mViewModel.time}"
+                        android:theme="@style/MyEditText"
+                        android:hint="时间"
+                        android:inputType="datetime"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/light_gray"
+                        android:textColor="#000"
+                        android:textSize="16sp"
+                        android:layout_height="45dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"/>
+                </LinearLayout>
                 <EditText
                     android:text="@={data.mViewModel.extensionPlace}"
                     android:theme="@style/MyEditText"
