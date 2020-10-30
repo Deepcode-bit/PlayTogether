@@ -294,16 +294,13 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
                 }
             } else {
                 Toast.makeText(requireActivity(),"拒绝了你的请求",Toast.LENGTH_SHORT).show();
-                //"权限拒绝");
-                // TODO: 2018/12/4 这里可以给用户一个提示,请求权限被拒绝了
             }
         }
         if (requestCode == MY_ADD_CASE_CALL_PHONE2) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 choosePhoto();
             } else {
-                //"权限拒绝");
-                // TODO: 2018/12/4 这里可以给用户一个提示,请求权限被拒绝了
+                Toast.makeText(requireActivity(),"拒绝了你的请求",Toast.LENGTH_SHORT).show();
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

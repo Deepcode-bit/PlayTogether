@@ -24,8 +24,7 @@ public class App extends Application {
     //教务系统API接口
     public static final String EASUrl="http://jwgl.nepu.edu.cn/new/login";
     //IM TCP连接的地址和接口
-    //TODO:内网IP，记得改IP地址
-    public static final String IPAddress="192.168.1.105";
+    public static final String IPAddress="122.51.222.186";
     public static final int port=1230;
 
     public static final ThreadPoolExecutor mThreadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
