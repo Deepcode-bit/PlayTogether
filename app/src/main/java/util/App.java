@@ -1,6 +1,7 @@
 package util;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -24,7 +25,7 @@ public class App extends Application {
     public static final String EASUrl="http://jwgl.nepu.edu.cn/new/login";
     //IM TCP连接的地址和接口
     //TODO:内网IP，记得改IP地址
-    public static final String IPAddress="192.168.1.106";
+    public static final String IPAddress="192.168.1.105";
     public static final int port=1230;
 
     public static final ThreadPoolExecutor mThreadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
@@ -40,6 +41,8 @@ public class App extends Application {
     public static List<ExtensionModel> createdExtensions;
     //消息集合
     public static List<MessageModel> messages;
+    //用户头像
+    public static Bitmap headImage;
 
     public static String getExtensionType(int type){
         String typeString=null;

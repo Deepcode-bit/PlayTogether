@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,8 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Connection {
@@ -176,12 +181,47 @@ public class Connection {
         return null;
     }
 
+    /**
+     * 获取网络图片
+     * @param path url地址
+     * @return 图片
+     * @throws IOException
+     */
     public static Bitmap getBitmap(String path) throws IOException {
         InputStream is=DoGet(path,new HashMap<String, String>());
         if(is!=null) {
             Bitmap bitmap = BitmapFactory.decodeStream(is);
             is.close();
             return bitmap;
+        }
+        return null;
+    }
+
+    /**
+     * 上传图片
+     * @param url
+     * @param imagePath 图片路径
+     * @return 新图片的路径
+     * @throws IOException
+     * @throws JSONException
+     */
+    public static JSONObject uploadImage(String email,String url, String imagePath) throws IOException, JSONException {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Log.d("imagePath", imagePath);
+        File file = new File(imagePath);
+        RequestBody image = RequestBody.create(MediaType.parse("image/png"), file);
+        MultipartBody multipartBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("email",email)
+                .addFormDataPart("file", imagePath, image)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(multipartBody)
+                .build();
+        Response response = okHttpClient.newCall(request).execute();
+        if(response.isSuccessful()){
+            return new JSONObject(response.body().string());
         }
         return null;
     }

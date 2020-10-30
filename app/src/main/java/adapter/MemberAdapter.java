@@ -1,5 +1,6 @@
 package adapter;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,13 +42,16 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
     @Override
     public void onBindViewHolder(@NonNull MemberViewHolder holder, final int position) {
-        Member member=members.get(position);
+        Member member = members.get(position);
         holder.memberName.setText(member.getUserName());
-        if(itemClickListener!=null){
+        if (member.getHeadBitmap() != null) {
+            holder.headImage.setImageBitmap(member.getHeadBitmap());
+        }
+        if (itemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemClickListener.onItemClick(v,position);
+                    itemClickListener.onItemClick(v, position);
                 }
             });
         }
@@ -64,7 +68,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         TextView memberName;
         MemberViewHolder(@NonNull View itemView) {
             super(itemView);
-            headImage=itemView.findViewById(R.id.image_head);
+            headImage=itemView.findViewById(R.id.member_head);
             memberName=itemView.findViewById(R.id.member_name);
         }
     }

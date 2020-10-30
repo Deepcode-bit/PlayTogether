@@ -37,6 +37,7 @@ import model.ExtensionModel;
 import util.App;
 import adapter.MAdapter;
 import adapter.MAdapter.onItemClickListener;
+import util.CatcherManager;
 import view_model.HostViewModel;
 
 public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,onItemClickListener,MAdapter.onSearchButtonClickListener, RadioGroup.OnCheckedChangeListener {
@@ -47,6 +48,7 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
     private FragmentExtensionBinding mBinding;
     private HostViewModel mViewModel;
     private ProgressBar progressBar;
+    private CatcherManager manager;
     public static MyHandler handler;
     public static final int extensionDataChange=0x001;
     public static final int notifyError=0x002;
@@ -89,7 +91,8 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
         progressBar.setVisibility(View.INVISIBLE);
         //初始化recyclerView
         mAdapter = new MAdapter();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        manager=new CatcherManager(requireActivity());
+        recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(mAdapter);
         mAdapter.SetAllExtension(mViewModel.extensions.getValue());
         mAdapter.SetSearchButListener(this);

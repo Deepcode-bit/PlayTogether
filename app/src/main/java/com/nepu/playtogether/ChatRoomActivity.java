@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,6 +25,7 @@ import adapter.ChatAdapter;
 import model.MessageModel;
 import model.UserModel;
 import util.App;
+import util.Connection;
 import util.HandlerMsg;
 import util.TcpClient;
 
@@ -92,6 +94,9 @@ public class ChatRoomActivity extends AppCompatActivity implements TcpClient.Mes
             UserModel localUser = App.localUser.getValue();
             String msg=msgEdit.getText().toString();
             MessageModel message = new MessageModel(localUser.getUID(),receiverId,senderName,msg,new Date().toLocaleString(),senderType);
+            if(localUser.getHeadImage()!=null){
+                message.setSenderImage(localUser.getHeadImage());
+            }
             messages.add(message);
             App.messages.add(message);
             adapter.notifyDataSetChanged();
@@ -115,8 +120,16 @@ public class ChatRoomActivity extends AppCompatActivity implements TcpClient.Mes
             return;
         if (senderType != msg.getSendType())
             return;
-        if (msg.getSendType() == MessageModel.EXTENSION)
+        if (msg.getSendType() == MessageModel.EXTENSION) {
             App.messages.add(msg);
+        }
+        try {
+            if (msg.getSenderImage() == null) return;
+            Bitmap bitmap = Connection.getBitmap(msg.getSenderImage());
+            msg.setHeadImage(bitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         bundle.putSerializable("msg", msg);
         Message message = HandlerMsg.getMsg(RECEIVE, bundle);
         myHandler.sendMessage(message);

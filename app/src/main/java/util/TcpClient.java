@@ -85,7 +85,7 @@ public class TcpClient {
 
     private void sendTcpMessage(final String msg){
         if (socket != null && socket.isConnected()) {
-            new Thread(new Runnable() {
+            App.mThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -96,7 +96,7 @@ public class TcpClient {
                         e.printStackTrace();
                     }
                 }
-            }).start();
+            });
         }
     }
 

@@ -3,6 +3,7 @@ package adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,39 +36,42 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final MsgViewHolder holder, int position) {
-        MessageModel message=messages.get(position);
+        MessageModel message = messages.get(position);
         holder.senderName.setText(message.getSenderName());
         holder.senderMsg.setText(message.getMsg());
         holder.sendTime.setText(message.getSendTime());
-        if(message.getUnReadNum()==0){
+        if (message.getHeadImage() != null) {
+            holder.headImage.setImageBitmap(message.getHeadImage());
+        }
+        if (message.getUnReadNum() == 0) {
             holder.unReadNum.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             holder.unReadNum.setText(String.valueOf(message.getUnReadNum()));
         }
-        if(itemClickListener!=null){
+        if (itemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos=holder.getLayoutPosition();
-                    itemClickListener.onItemClick(v,pos);
+                    int pos = holder.getLayoutPosition();
+                    itemClickListener.onItemClick(v, pos);
                 }
             });
         }
-        if(deleteClickListener!=null){
+        if (deleteClickListener != null) {
             holder.itemView.findViewById(R.id.delete_but).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos=holder.getLayoutPosition();
-                    deleteClickListener.onDeleteClick(v,pos);
+                    int pos = holder.getLayoutPosition();
+                    deleteClickListener.onDeleteClick(v, pos);
                 }
             });
         }
-        if(firstClickListener!=null){
+        if (firstClickListener != null) {
             holder.itemView.findViewById(R.id.first_but).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos=holder.getLayoutPosition();
-                    firstClickListener.onFirstClick(v,pos);
+                    int pos = holder.getLayoutPosition();
+                    firstClickListener.onFirstClick(v, pos);
                 }
             });
         }
@@ -104,8 +108,10 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
 
     static class MsgViewHolder extends RecyclerView.ViewHolder {
         TextView senderName,senderMsg,sendTime,unReadNum;
+        ImageView headImage;
         MsgViewHolder(@NonNull View itemView) {
             super(itemView);
+            headImage=itemView.findViewById(R.id.msg_head);
             senderName=itemView.findViewById(R.id.sender_name);
             sendTime=itemView.findViewById(R.id.send_time);
             senderMsg=itemView.findViewById(R.id.sender_msg);

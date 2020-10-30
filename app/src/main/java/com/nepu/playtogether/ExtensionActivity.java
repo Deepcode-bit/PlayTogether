@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -261,7 +262,13 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                 }
                 members.clear();
                 for(UserModel user: userModels){
-                    members.add(new Member(user.getUID(),user.getEmail(),user.getUserName(),user.getHeadImage()));
+                    Member member=new Member(user.getUID(),user.getEmail(),user.getUserName(),user.getHeadImage());
+                    if(user.getHeadImage()!=null){
+                        Bitmap bitmap = Connection.getBitmap(user.getHeadImage());
+                        member.setHeadBitmap(bitmap);
+                    }
+                    members.add(member);
+
                 }
                 //通知UI更新
                 ExtensionActivity.handler.sendEmptyMessage(MyHandler.changeData);

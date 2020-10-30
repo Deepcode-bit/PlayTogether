@@ -99,20 +99,19 @@ public class PublicFragment extends Fragment implements View.OnTouchListener {
         requireActivity().onBackPressed();
     }
 
-    public void onExtensionCreate(View v){
-        if(mViewModel.extensionName.getValue().isEmpty() || mViewModel.time.getValue().isEmpty() || mViewModel.extensionPlace.getValue().isEmpty()){
-            Toast.makeText(requireActivity(),"活动信息不能为空",Toast.LENGTH_SHORT).show();
+    public void onExtensionCreate(View v) {
+        if (mViewModel.extensionName.getValue().isEmpty() || mViewModel.time.getValue().isEmpty() || mViewModel.extensionPlace.getValue().isEmpty()) {
+            Toast.makeText(requireActivity(), "活动信息不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
-        Date date=new Date();
-        date.setYear(Integer.parseInt(mViewModel.year.getValue()));
-        date.setMonth(Integer.parseInt(mViewModel.month.getValue()));
+        Date date = new Date();
+        date.setYear(Integer.parseInt(mViewModel.year.getValue()) - 1900);
+        date.setMonth(Integer.parseInt(mViewModel.month.getValue()) - 1);
         date.setDate(Integer.parseInt(mViewModel.date.getValue()));
         date.setHours(hour);
         date.setMinutes(minutes);
-        mViewModel.extensionDate=sdf.format(date);
-        Toast.makeText(requireActivity(),sdf.format(date),Toast.LENGTH_SHORT).show();
+        mViewModel.extensionDate = sdf.format(date);
         App.mThreadPool.execute(mViewModel.addExtension);
     }
 

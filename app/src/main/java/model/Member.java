@@ -1,10 +1,14 @@
 package model;
 
+import android.graphics.Bitmap;
+
 public class Member {
     private int UID;
     private String email;
     private String userName;
     private String headImage;
+    private Bitmap headBitmap;
+
 
     public int getUID() {
         return UID;
@@ -36,6 +40,14 @@ public class Member {
 
     public void setHeadImage(String headImage) {
         this.headImage = headImage;
+    }
+
+    public Bitmap getHeadBitmap() {
+        return headBitmap;
+    }
+
+    public void setHeadBitmap(Bitmap headBitmap) {
+        this.headBitmap = headBitmap;
     }
 
     public Member(int UID, String email, String userName, String headImage) {

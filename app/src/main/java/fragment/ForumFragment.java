@@ -1,6 +1,7 @@
 package fragment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import adapter.MsgAdapter.onItemDeleteClickListener;
 import adapter.MsgAdapter.onItemFirstClickListener;
 import model.MessageModel;
 import util.App;
+import util.Connection;
 import util.TcpClient;
 import view.SlideRecyclerView;
 import view_model.HostViewModel;
@@ -135,6 +137,14 @@ public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      */
     @Override
     public void onMessageReceive(final MessageModel msg) {
+        if(msg.getSenderImage()!=null){
+            try {
+                Bitmap bitmap= Connection.getBitmap(msg.getSenderImage());
+                msg.setHeadImage(bitmap);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
         requireView().post(new Runnable() {
             @Override
             public void run() {

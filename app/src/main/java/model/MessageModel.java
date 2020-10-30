@@ -1,5 +1,7 @@
 package model;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 public class MessageModel implements Serializable {
@@ -7,9 +9,11 @@ public class MessageModel implements Serializable {
     private int receiverId;
     private String msg;
     private String sendTime;
+    private String senderImage;
     private String senderName;
     private int sendType;
     private int unReadNum=1;
+    private Bitmap headImage;
 
     public int getUnReadNum() {
         return unReadNum;
@@ -78,5 +82,21 @@ public class MessageModel implements Serializable {
 
     public void setSendType(int sendType) {
         this.sendType = sendType;
+    }
+
+    public String getSenderImage() {
+        return senderImage;
+    }
+
+    public void setSenderImage(String senderImage) {
+        this.senderImage = senderImage;
+    }
+
+    public Bitmap getHeadImage() {
+        return headImage;
+    }
+
+    public void setHeadImage(Bitmap headImage) {
+        this.headImage = headImage;
     }
 }

@@ -92,17 +92,18 @@ public class MAdapter extends RecyclerView.Adapter<MAdapter.MyViewHolder> {
                 holder.radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
             return;
         }
+        if (position > extensions.size()) return;
         ExtensionModel extension = extensions.get(position);
         holder.type.setText(App.getExtensionType(extension.getType()));
         holder.cellLayout.setBackgroundResource(App.getExtensionDrawable(extension.getType()));
         holder.name.setText(extension.getName());
         holder.originator.setText(extension.getOriginator());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
-        String time=extension.getStartTime();
+        String time = extension.getStartTime();
         try {
             Date date = sdf.parse(extension.getStartTime());
             if (date != null) time = sdf.format(date);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         holder.startTime.setText(time);
