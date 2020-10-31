@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.FormBody;
@@ -30,6 +31,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Connection {
+
+    public static List<String> setCookies;
 
     private static InputStream DoGet(String path, Map<String,String> params){
         StringBuilder sb=new StringBuilder(path);
@@ -51,6 +54,8 @@ public class Connection {
             conn.setReadTimeout(5000);
             conn.setDoInput(true);
             conn.setRequestMethod("GET");
+            Map<String, List<String>> cookies = conn.getHeaderFields();
+            setCookies = cookies.get("Set-Cookie");
             //请求成功
             if(conn.getResponseCode()==200){
                 InputStream is=conn.getInputStream();
@@ -80,6 +85,10 @@ public class Connection {
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
+            if (setCookies!=null) {
+                String cookie = setCookies.get(0);
+                conn.setRequestProperty("Cookie", cookie);
+            }
             DataOutputStream dos=new DataOutputStream(conn.getOutputStream());
             dos.write(sb.toString().getBytes());
             dos.flush();

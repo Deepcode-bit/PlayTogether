@@ -26,7 +26,6 @@ public class App extends Application {
     //IM TCP连接的地址和接口
     public static final String IPAddress="122.51.222.186";
     public static final int port=1230;
-
     public static final ThreadPoolExecutor mThreadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
     public static final String dataBaseName = "my_data";
     public static final int dataBaseVersion = 1;

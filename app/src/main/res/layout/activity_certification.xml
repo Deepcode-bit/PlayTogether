@@ -79,7 +79,7 @@
                 android:textColor="#000"
                 android:text="@={data.mViewModel.stuNumber}"
                 android:gravity="center"
-                android:inputType="text"
+                android:inputType="number"
                 android:textColorHint="@color/dark_gray"
                 android:hint="请输入教务系统学号"
                 android:background="#fff"
@@ -108,7 +108,7 @@
                 android:textColor="#000"
                 android:text="@={data.mViewModel.stuPwd}"
                 android:gravity="center"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:textColorHint="@color/dark_gray"
                 android:hint="请输入教务系统密码"
                 android:background="#fff"
@@ -116,7 +116,40 @@
                 android:layout_width="0dp"
                 android:layout_weight="3" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:background="#fff"
+            android:layout_height="50dp"
+            android:layout_width="match_parent">
 
+            <TextView
+                android:layout_margin="10dp"
+                android:gravity="center_vertical"
+                android:textSize="20sp"
+                android:textColor="#000"
+                android:text="验证码"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content" />
+            <EditText
+                android:textColor="#000"
+                android:text="@={data.mViewModel.verifyCode}"
+                android:gravity="center"
+                android:inputType="text"
+                android:maxLength="4"
+                android:textColorHint="@color/dark_gray"
+                android:hint="请输入验证码"
+                android:background="#fff"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+            <ImageView
+                android:onClick="onVerifyCodeClick"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:id="@+id/verify_code"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
         <LinearLayout
             android:layout_marginTop="20dp"
             android:background="#fff"
