@@ -308,7 +308,9 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                         extensionActivity.get().joinBut.setBackgroundResource(R.drawable.corn_button2);
                         extensionActivity.get().joinBut.setText("退出活动");
                         extensionActivity.get().chatBut.setEnabled(true);
-                        extensionActivity.get().members.add(new Member(user.getUID(), user.getEmail(), user.getUserName(), user.getHeadImage()));
+                        Member member=new Member(user.getUID(), user.getEmail(), user.getUserName(), user.getHeadImage());
+                        member.setHeadBitmap(App.headImage);
+                        extensionActivity.get().members.add(member);
                         extensionActivity.get().memberAdapter.notifyDataSetChanged();
                         Toast.makeText(extensionActivity.get(), "加入成功", Toast.LENGTH_SHORT).show();
                     } catch (Exception ex) {
@@ -325,7 +327,8 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                     try {
                         TcpClient.getInstance().exitExtension(user.getUID(), extensionActivity.get().extension.getValue().getID());
                         //本地操作
-                        App.ongoingExtensions.remove(extensionActivity.get().extension.getValue().getID());
+                        App.ongoingExtensions.remove(extensionActivity.get().extension.getValue());
+                        App.joinExtensions.remove(extensionActivity.get().extension.getValue());
                         extensionActivity.get().joinBut.setBackgroundResource(R.drawable.login_button);
                         extensionActivity.get().joinBut.setText("加入活动");
                         extensionActivity.get().chatBut.setEnabled(false);

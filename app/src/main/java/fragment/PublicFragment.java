@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ public class PublicFragment extends Fragment implements View.OnTouchListener {
     private TimePickerDialog pickerDialog;
     private EditText timeEdit;
     private int hour,minutes;
+    private ProgressBar progressBar;
 
     public PublicFragment() {
         // Required empty public constructor
@@ -77,6 +79,7 @@ public class PublicFragment extends Fragment implements View.OnTouchListener {
         super.onActivityCreated(savedInstanceState);
         handler=new MyHandler(this);
         timeEdit=requireView().findViewById(R.id.date_picker_time);
+        progressBar=requireView().findViewById(R.id.progress_extension);
         timeEdit.setOnTouchListener(this);
         final Calendar mCalendar=Calendar.getInstance();
         pickerDialog = new TimePickerDialog(requireActivity(), new TimePickerDialog.OnTimeSetListener() {
@@ -112,6 +115,7 @@ public class PublicFragment extends Fragment implements View.OnTouchListener {
         date.setHours(hour);
         date.setMinutes(minutes);
         mViewModel.extensionDate = sdf.format(date);
+        progressBar.setVisibility(View.VISIBLE);
         App.mThreadPool.execute(mViewModel.addExtension);
     }
 
@@ -127,6 +131,7 @@ public class PublicFragment extends Fragment implements View.OnTouchListener {
     public static class MyHandler extends Handler{
         WeakReference<PublicFragment> publicFragment;
         public static final int addExtension=0x001;
+        public static final int notifyError=0x002;
 
         MyHandler(PublicFragment fragment) {
             publicFragment = new WeakReference<>(fragment);
@@ -136,6 +141,7 @@ public class PublicFragment extends Fragment implements View.OnTouchListener {
             super.handleMessage(msg);
             if(publicFragment ==null)return;
             if (msg.what == addExtension) {
+                publicFragment.get().progressBar.setVisibility(View.INVISIBLE);
                 FragmentActivity requireActivity = publicFragment.get().requireActivity();
                 Intent intent = new Intent();
                 ExtensionModel extension = (ExtensionModel) msg.obj;
@@ -150,6 +156,10 @@ public class PublicFragment extends Fragment implements View.OnTouchListener {
                     Toast.makeText(requireActivity, "创建失败", Toast.LENGTH_SHORT).show();
                     Log.e("error", Objects.requireNonNull(ex.getMessage()));
                 }
+            }else if(msg.what==notifyError){
+                publicFragment.get().progressBar.setVisibility(View.INVISIBLE);
+                String error = msg.getData().getString("error");
+                Toast.makeText(publicFragment.get().requireActivity(), error, Toast.LENGTH_SHORT).show();
             }
         }
     }
