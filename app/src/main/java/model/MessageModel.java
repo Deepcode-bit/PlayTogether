@@ -12,7 +12,7 @@ public class MessageModel implements Serializable {
     private String senderImage;
     private String senderName;
     private int sendType;
-    private int unReadNum=1;
+    private int unReadNum;
     private Bitmap headImage;
 
     public int getUnReadNum() {
@@ -29,7 +29,8 @@ public class MessageModel implements Serializable {
         this.msg = msg;
         this.sendTime = sendTime;
         this.sendType = sendType;
-        this.senderName=senderName;
+        this.senderName = senderName;
+        this.unReadNum = 1;
     }
 
     public static final int PERSON=0;

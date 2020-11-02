@@ -44,6 +44,10 @@ import util.Connection;
 import util.HandlerMsg;
 import util.TcpClient;
 
+import static com.nepu.playtogether.HostActivity.getCreatedExtensions;
+import static com.nepu.playtogether.HostActivity.getJoinExtensions;
+import static com.nepu.playtogether.HostActivity.getOngoingExtensions;
+
 public class ExtensionActivity extends AppCompatActivity implements MemberAdapter.onItemClickListener {
 
     private RecyclerView memberRecycler;
@@ -98,7 +102,7 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                 return;
             }
             for(ExtensionModel ex:App.ongoingExtensions){
-                if(ex.getUID()==extension.getValue().getUID()){
+                if(ex.getID()==extension.getValue().getID()){
                     joinBut.setBackgroundResource(R.drawable.corn_button2);
                     joinBut.setText("退出活动");
                     chatBut.setEnabled(true);
@@ -326,9 +330,6 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                     UserModel user = App.localUser.getValue();
                     try {
                         TcpClient.getInstance().exitExtension(user.getUID(), extensionActivity.get().extension.getValue().getID());
-                        //本地操作
-                        App.ongoingExtensions.remove(extensionActivity.get().extension.getValue());
-                        App.joinExtensions.remove(extensionActivity.get().extension.getValue());
                         extensionActivity.get().joinBut.setBackgroundResource(R.drawable.login_button);
                         extensionActivity.get().joinBut.setText("加入活动");
                         extensionActivity.get().chatBut.setEnabled(false);
@@ -341,6 +342,10 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                         }
                         extensionActivity.get().memberAdapter.notifyDataSetChanged();
                         Toast.makeText(extensionActivity.get(), "已退出", Toast.LENGTH_SHORT).show();
+                        //更新数据
+                        App.mThreadPool.execute(getOngoingExtensions);
+                        App.mThreadPool.execute(getCreatedExtensions);
+                        App.mThreadPool.execute(getJoinExtensions);
                     }catch (Exception ex){
                         Toast.makeText(extensionActivity.get(), "退出失败", Toast.LENGTH_SHORT).show();
                     }

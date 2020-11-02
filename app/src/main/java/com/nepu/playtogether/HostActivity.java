@@ -3,6 +3,7 @@ package com.nepu.playtogether;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -39,6 +40,7 @@ import fragment.ExtensionFragment;
 import fragment.ForumFragment;
 import fragment.PersonFragment;
 import model.ExtensionModel;
+import model.MessageModel;
 import model.UserModel;
 import util.App;
 import util.Connection;
@@ -119,7 +121,7 @@ public class HostActivity extends AppCompatActivity {
         }
     }
 
-    private Runnable getOngoingExtensions=new Runnable() {
+    public static Runnable getOngoingExtensions=new Runnable() {
         @Override
         public void run() {
             UserModel user = App.localUser.getValue();
@@ -145,7 +147,7 @@ public class HostActivity extends AppCompatActivity {
     };
 
 
-    private Runnable getCreatedExtensions=new Runnable() {
+    public static Runnable getCreatedExtensions=new Runnable() {
         @Override
         public void run() {
             UserModel user = App.localUser.getValue();
@@ -173,7 +175,7 @@ public class HostActivity extends AppCompatActivity {
     };
 
 
-    private Runnable getJoinExtensions=new Runnable() {
+    public static Runnable getJoinExtensions=new Runnable() {
         @Override
         public void run() {
             UserModel user = App.localUser.getValue();

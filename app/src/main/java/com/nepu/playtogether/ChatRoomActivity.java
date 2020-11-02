@@ -28,6 +28,7 @@ import util.App;
 import util.Connection;
 import util.HandlerMsg;
 import util.TcpClient;
+import view_model.HostViewModel;
 
 public class ChatRoomActivity extends AppCompatActivity implements TcpClient.MessageReceiveListener {
 
@@ -86,7 +87,7 @@ public class ChatRoomActivity extends AppCompatActivity implements TcpClient.Mes
                 messages.add(msg);
             }
         }
-        TcpClient.getInstance().setOnMessageReceiveListener(this);
+        TcpClient.getInstance().setOnMessageReceiveListener1(this);
     }
 
     public void onSendMsgClick(View v) throws JSONException {
@@ -142,23 +143,26 @@ public class ChatRoomActivity extends AppCompatActivity implements TcpClient.Mes
         }
         @Override
         public void handleMessage(@NonNull Message msg) {
-            switch (msg.what){
-                case RECEIVE:
-                    Bundle bundle=msg.getData();
-                    MessageModel messageModel = (MessageModel) bundle.getSerializable("msg");
-                    if(messageModel !=null){
-                        chatRoomActivity.get().messages.add(messageModel);
-                        chatRoomActivity.get().adapter.notifyDataSetChanged();
-                        chatRoomActivity.get().linearLayoutManager.scrollToPositionWithOffset(chatRoomActivity.get().adapter.getItemCount() - 1, Integer.MIN_VALUE);
-                    }
-                    break;
+            if (msg.what == RECEIVE) {
+                Bundle bundle = msg.getData();
+                MessageModel messageModel = (MessageModel) bundle.getSerializable("msg");
+                if (messageModel != null) {
+                    chatRoomActivity.get().messages.add(messageModel);
+                    chatRoomActivity.get().adapter.notifyDataSetChanged();
+                    chatRoomActivity.get().linearLayoutManager.scrollToPositionWithOffset(chatRoomActivity.get().adapter.getItemCount() - 1, Integer.MIN_VALUE);
+                }
             }
         }
     }
 
     @Override
+    public void onBackPressed() {
+        HostViewModel.openChatUID = -1;
+        super.onBackPressed();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        TcpClient.getInstance().removeListener(this);
     }
 }

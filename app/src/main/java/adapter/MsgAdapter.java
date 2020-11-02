@@ -46,6 +46,7 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
         if (message.getUnReadNum() == 0) {
             holder.unReadNum.setVisibility(View.INVISIBLE);
         } else {
+            holder.unReadNum.setVisibility(View.VISIBLE);
             holder.unReadNum.setText(String.valueOf(message.getUnReadNum()));
         }
         if (itemClickListener != null) {

@@ -1,16 +1,11 @@
 package view_model;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.nepu.playtogether.CertificationActivity;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
 
 import util.App;
 import util.Connection;
@@ -20,6 +15,7 @@ public class CertificationViewModel extends ViewModel {
     public MutableLiveData<String> stuPwd;
     public MutableLiveData<String> statue;
     public MutableLiveData<String> verifyCode;
+    public MutableLiveData<String> verifyText;
     public Bitmap codeBitmap;
 
     public CertificationViewModel() {
@@ -27,8 +23,7 @@ public class CertificationViewModel extends ViewModel {
         stuPwd = new MutableLiveData<>("");
         statue = new MutableLiveData<>("未登录");
         verifyCode=new MutableLiveData<>("");
-        if (App.localUser.getValue() != null)
-            statue.setValue(App.getStateType(App.localUser.getValue().getUserState()));
+        verifyText=new MutableLiveData<>("您未进行学生认证");
     }
 
     public Runnable getVerifyCode=new Runnable() {

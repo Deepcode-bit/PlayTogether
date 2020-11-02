@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import fragment.ExtensionFragment;
+import fragment.ForumFragment;
 import fragment.PublicFragment;
 import model.ExtensionModel;
 import model.MessageModel;
@@ -38,21 +39,21 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
     public MutableLiveData<Integer> joinNum,createNum,underNum;
     public MutableLiveData<List<ExtensionModel>> extensions;
     public MutableLiveData<List<MessageModel>> messages;
-    public int openChatUID;
+    public static int openChatUID;
     public int searchID;
     public int type;
 
-    public HostViewModel(){
-        userName=new MutableLiveData<>();
+    public HostViewModel() {
+        userName = new MutableLiveData<>();
         userName.setValue("登录/注册");
-        verify=new MutableLiveData<>();
-        joinNum=new MutableLiveData<>(App.joinExtensions.size());
-        createNum=new MutableLiveData<>(App.createdExtensions.size());
-        underNum=new MutableLiveData<>(App.ongoingExtensions.size());
-        extensions= new MutableLiveData<List<ExtensionModel>>(new ArrayList<ExtensionModel>());
+        verify = new MutableLiveData<>();
+        joinNum = new MutableLiveData<>(App.joinExtensions.size());
+        createNum = new MutableLiveData<>(App.createdExtensions.size());
+        underNum = new MutableLiveData<>(App.ongoingExtensions.size());
+        extensions = new MutableLiveData<List<ExtensionModel>>(new ArrayList<ExtensionModel>());
         extensions.getValue().add(null);
-        messages= new MutableLiveData<List<MessageModel>>(new ArrayList<MessageModel>());
-        TcpClient.getInstance().setOnMessageReceiveListener(this);
+        messages = new MutableLiveData<List<MessageModel>>(new ArrayList<MessageModel>());
+        TcpClient.getInstance().setOnMessageReceiveListener2(this);
     }
 
     
@@ -74,17 +75,8 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
     }
 
     @Override
-    public void onMessageReceive(MessageModel msg) {
-        if(msg.getSendType()!=MessageModel.EXTENSION){
-            addMessage(msg);
-            App.messages.add(msg);
-        }
-    }
-
-    @Override
     protected void onCleared() {
         super.onCleared();
-        TcpClient.getInstance().removeListener(this);
     }
 
     public Runnable getAllExtension = new Runnable() {
@@ -167,4 +159,22 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
             }
         }
     };
+
+    @Override
+    public void onMessageReceive(MessageModel msg) {
+        if (msg.getSendType() != MessageModel.EXTENSION) {
+            if (msg.getSenderImage() != null) {
+                try {
+                    Bitmap bitmap = Connection.getBitmap(msg.getSenderImage());
+                    msg.setHeadImage(bitmap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            App.messages.add(msg);
+            addMessage(msg);
+            if (ForumFragment.handler != null)
+                ForumFragment.handler.sendEmptyMessage(ForumFragment.MyHandler.UpdateView);
+        }
+    }
 }

@@ -98,7 +98,10 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         UpdateView();
-        handler=new MyHandler(this);
+        handler = new MyHandler(this);
+        mViewModel.underNum.setValue(App.ongoingExtensions.size());
+        mViewModel.createNum.setValue(App.createdExtensions.size());
+        mViewModel.joinNum.setValue(App.joinExtensions.size());
     }
 
     /*

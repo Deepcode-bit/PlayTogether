@@ -25,6 +25,7 @@ public class App extends Application {
     public static final String EASUrl="http://jwgl.nepu.edu.cn/new/login";
     //IM TCP连接的地址和接口
     public static final String IPAddress="122.51.222.186";
+    //public static final String IPAddress="192.168.1.106";
     public static final int port=1230;
     public static final ThreadPoolExecutor mThreadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
     public static final String dataBaseName = "my_data";

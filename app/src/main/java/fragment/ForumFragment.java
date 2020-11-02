@@ -3,10 +3,13 @@ package fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
@@ -19,6 +22,7 @@ import com.nepu.playtogether.HostActivity;
 import com.nepu.playtogether.R;
 import com.nepu.playtogether.databinding.FragmentForumBinding;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,18 +34,20 @@ import adapter.MsgAdapter.onItemFirstClickListener;
 import model.MessageModel;
 import util.App;
 import util.Connection;
+import util.HandlerMsg;
 import util.TcpClient;
 import view.SlideRecyclerView;
 import view_model.HostViewModel;
 
 
-public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, onItemClickListener,onItemDeleteClickListener,onItemFirstClickListener,TcpClient.MessageReceiveListener {
+public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, onItemClickListener,onItemDeleteClickListener,onItemFirstClickListener {
 
     private SlideRecyclerView recyclerView;
     private MsgAdapter msgAdapter;
     private FragmentForumBinding mBinding;
-    private HostViewModel mViewModel;
+    public HostViewModel mViewModel;
     private SwipeRefreshLayout refreshLayout;
+    public static MyHandler handler;
 
     public ForumFragment() {
         // Required empty public constructor
@@ -62,20 +68,19 @@ public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                              Bundle savedInstanceState) {
         mBinding = FragmentForumBinding.inflate(inflater, container, false);
         mViewModel = ViewModelProviders.of(requireActivity()).get(HostViewModel.class);
+        mViewModel.openChatUID = -1;
         mBinding.setLifecycleOwner(getActivity());
         mBinding.setData((HostActivity) getActivity());
-        mViewModel.openChatUID = -1;
         return mBinding.getRoot();
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        refreshLayout=getView().findViewById(R.id.refresh_layout);
+        refreshLayout = getView().findViewById(R.id.refresh_layout);
         refreshLayout.setOnRefreshListener(this);
-        recyclerView= requireView().findViewById(R.id.recycler_msg);
-        msgAdapter=new MsgAdapter();
+        recyclerView = requireView().findViewById(R.id.recycler_msg);
+        msgAdapter = new MsgAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(msgAdapter);
         msgAdapter.setOnItemClickListener(this);
@@ -83,8 +88,7 @@ public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         msgAdapter.setOnItemFirstClickListener(this);
         msgAdapter.setAllMsg(mViewModel.messages.getValue());
         msgAdapter.notifyDataSetChanged();
-
-        TcpClient.getInstance().setOnMessageReceiveListener(this);
+        handler = new MyHandler(this);
     }
 
     @Override
@@ -131,35 +135,26 @@ public class ForumFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         msgAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * 收到消息的回调函数
-     * @param msg
-     */
-    @Override
-    public void onMessageReceive(final MessageModel msg) {
-        if(msg.getSenderImage()!=null){
-            try {
-                Bitmap bitmap= Connection.getBitmap(msg.getSenderImage());
-                msg.setHeadImage(bitmap);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        requireView().post(new Runnable() {
-            @Override
-            public void run() {
-                if(msg.getSendType()!=MessageModel.EXTENSION){
-                    msgAdapter.notifyDataSetChanged();
-                }else{
-                    App.messages.add(msg);
-                }
-            }
-        });
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TcpClient.getInstance().removeListener(this);
+        mViewModel.openChatUID = -1;
+    }
+
+    public static class MyHandler extends Handler{
+        public static final int UpdateView=0x001;
+        private WeakReference<ForumFragment> forumFragment;
+
+        public MyHandler(ForumFragment fragment){
+            forumFragment=new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what==UpdateView){
+                forumFragment.get().msgAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

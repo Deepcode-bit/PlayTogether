@@ -25,7 +25,8 @@ public class TcpClient {
     public interface MessageReceiveListener{
         void onMessageReceive(MessageModel msg);
     }
-    private List<MessageReceiveListener> listeners;
+    private MessageReceiveListener listener1;
+    private MessageReceiveListener listener2;
 
     public static TcpClient getInstance(){
         if(client==null){
@@ -34,11 +35,11 @@ public class TcpClient {
         return client;
     }
 
-    private TcpClient(){
-        listeners =new ArrayList<>();
+    public void setOnMessageReceiveListener1(MessageReceiveListener listener) {
+            listener1 = listener;
     }
-    public void setOnMessageReceiveListener(MessageReceiveListener listener){
-        listeners.add(listener);
+    public void setOnMessageReceiveListener2(MessageReceiveListener listener) {
+        listener2 = listener;
     }
 
     public void startClient(final String address ,final int port){
@@ -63,9 +64,10 @@ public class TcpClient {
                             String data = new String(buffer, 0, len);
                             Log.i("tcp", "收到服务器的数据---------------------------------------------:" + data);
                             MessageModel messageModel = new Gson().fromJson(data, MessageModel.class);
-                            for(MessageReceiveListener listener : listeners){
-                                listener.onMessageReceive(messageModel);
-                            }
+                            if (listener1 != null)
+                                listener1.onMessageReceive(messageModel);
+                            if(listener2!=null)
+                                listener2.onMessageReceive(messageModel);
                         }
                         isConn=false;
                         Log.i("tcp", "客户端断开连接");
@@ -136,9 +138,5 @@ public class TcpClient {
             isConn=false;
             socket=null;
         }
-    }
-
-    public void removeListener(MessageReceiveListener listener){
-        listeners.remove(listener);
     }
 }

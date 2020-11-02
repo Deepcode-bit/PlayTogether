@@ -1,21 +1,14 @@
 package com.nepu.playtogether;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.icu.util.Calendar;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
@@ -26,15 +19,9 @@ import com.nepu.playtogether.databinding.ActivityCertificationBinding;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
-import model.UserModel;
 import util.App;
 import util.Connection;
 import util.Dao;
@@ -51,13 +38,19 @@ public class CertificationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding= DataBindingUtil.setContentView(this,R.layout.activity_certification);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_certification);
         mBinding.setData(this);
         mBinding.setLifecycleOwner(this);
-        mViewModel= ViewModelProviders.of(this).get(CertificationViewModel.class);
-        handler=new mHandler(this);
-        verifyCode=findViewById(R.id.verify_code);
+        mViewModel = ViewModelProviders.of(this).get(CertificationViewModel.class);
+        handler = new mHandler(this);
+        verifyCode = findViewById(R.id.verify_code);
         App.mThreadPool.execute(mViewModel.getVerifyCode);
+        if (App.localUser.getValue() != null) {
+            mViewModel.statue.setValue(App.getStateType(App.localUser.getValue().getUserState()));
+            if (App.localUser.getValue().getUserState() == 1) {
+                mViewModel.verifyText.setValue("您已认证");
+            }
+        }
     }
 
     public void OnBackButClick(View v){
@@ -140,6 +133,7 @@ public class CertificationActivity extends AppCompatActivity {
                 Toast.makeText(certificationActivity.get(), "认证成功", Toast.LENGTH_SHORT).show();
                 Dao dao = new Dao(certificationActivity.get());
                 certificationActivity.get().mViewModel.statue.setValue(msg.getData().getString("statue"));
+                certificationActivity.get().mViewModel.verifyText.setValue("您已认证");
                 if (App.localUser.getValue() == null) return;
                 if (dao.getLocalUser() != null) {
                     dao.UpdateUser(App.localUser.getValue());
