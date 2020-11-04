@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="@drawable/corn_button"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:focusable="true"
+        android:clickable="true"
+        android:id="@+id/report"
+        android:background="@drawable/rippler_white"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <TextView
+            android:layout_margin="5dp"
+            android:textColor="#f00"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:text="举报"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <View
+        android:background="@color/light_gray"
+        android:layout_height="1dp"
+        android:layout_width="match_parent"/>
+    <LinearLayout
+        android:id="@+id/cancel_but"
+        android:focusable="true"
+        android:clickable="true"
+        android:background="@drawable/rippler_white"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <TextView
+            android:layout_margin="5dp"
+            android:textColor="#000"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:text="取消"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</LinearLayout>

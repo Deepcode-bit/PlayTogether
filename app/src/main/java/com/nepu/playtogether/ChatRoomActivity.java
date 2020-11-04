@@ -12,13 +12,22 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.qmuiteam.qmui.skin.QMUISkinManager;
+import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
+import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheetBaseBuilder;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import adapter.ChatAdapter;
@@ -42,6 +51,8 @@ public class ChatRoomActivity extends AppCompatActivity implements TcpClient.Mes
     private String senderName;
     private LinearLayoutManager linearLayoutManager;
     static final private int RECEIVE=1;
+    static final private int REPORT=2;
+    static final private int notifyError=3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -107,6 +118,43 @@ public class ChatRoomActivity extends AppCompatActivity implements TcpClient.Mes
         }
     }
 
+    public void onMoreButClick(View v) {
+        final BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setCancelable(true);
+        View view = dialog.getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
+        view.findViewById(R.id.report).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                App.mThreadPool.execute(report);
+                dialog.dismiss();
+            }
+        });
+        view.findViewById(R.id.cancel_but).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setContentView(view);
+        dialog.show();
+    }
+
+    private Runnable report=new Runnable() {
+        @Override
+        public void run() {
+            try {
+                JSONObject json = Connection.getJson(App.post, App.netUrl, new HashMap<String, String>(), "/credit/report/" + receiverId);
+                if (json == null) throw new Exception("json为空");
+                myHandler.sendEmptyMessage(REPORT);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Bundle bundle = new Bundle();
+                bundle.putString("error", "举报失败");
+                Message msg = HandlerMsg.getMsg(notifyError, bundle);
+                myHandler.sendMessage(msg);
+            }
+        }
+    };
     /**
      * 接受消息的回调函数
      * @param msg
@@ -151,6 +199,11 @@ public class ChatRoomActivity extends AppCompatActivity implements TcpClient.Mes
                     chatRoomActivity.get().adapter.notifyDataSetChanged();
                     chatRoomActivity.get().linearLayoutManager.scrollToPositionWithOffset(chatRoomActivity.get().adapter.getItemCount() - 1, Integer.MIN_VALUE);
                 }
+            }else if(msg.what==REPORT){
+                Toast.makeText(chatRoomActivity.get(),"举报成功",Toast.LENGTH_SHORT).show();
+            }else if(msg.what==notifyError){
+                String error = msg.getData().getString("error");
+                Toast.makeText(chatRoomActivity.get(),error,Toast.LENGTH_SHORT).show();
             }
         }
     }

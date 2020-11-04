@@ -3,17 +3,11 @@ package view_model;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.nepu.playtogether.HostActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,10 +19,8 @@ import java.util.List;
 
 import fragment.ExtensionFragment;
 import fragment.ForumFragment;
-import fragment.PublicFragment;
 import model.ExtensionModel;
 import model.MessageModel;
-import okhttp3.FormBody;
 import util.App;
 import util.Connection;
 import util.HandlerMsg;
@@ -36,7 +28,7 @@ import util.TcpClient;
 
 public class HostViewModel extends ViewModel implements TcpClient.MessageReceiveListener {
     public MutableLiveData<String> userName,verify;
-    public MutableLiveData<Integer> joinNum,createNum,underNum;
+    public MutableLiveData<Integer> overNum,createNum,underNum;
     public MutableLiveData<List<ExtensionModel>> extensions;
     public MutableLiveData<List<MessageModel>> messages;
     public static int openChatUID;
@@ -47,7 +39,7 @@ public class HostViewModel extends ViewModel implements TcpClient.MessageReceive
         userName = new MutableLiveData<>();
         userName.setValue("登录/注册");
         verify = new MutableLiveData<>();
-        joinNum = new MutableLiveData<>(App.joinExtensions.size());
+        overNum = new MutableLiveData<>(App.overExtensions.size());
         createNum = new MutableLiveData<>(App.createdExtensions.size());
         underNum = new MutableLiveData<>(App.ongoingExtensions.size());
         extensions = new MutableLiveData<List<ExtensionModel>>(new ArrayList<ExtensionModel>());

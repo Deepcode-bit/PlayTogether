@@ -46,6 +46,10 @@ import util.App;
 import util.TcpClient;
 import view_model.PublicViewModel;
 
+import static com.nepu.playtogether.HostActivity.getCreatedExtensions;
+import static com.nepu.playtogether.HostActivity.getOngoingExtensions;
+import static com.nepu.playtogether.HostActivity.getOverExtensions;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -151,7 +155,10 @@ public class PublicFragment extends Fragment implements View.OnTouchListener {
                 try {
                     TcpClient.getInstance().sendJoinExtension(App.localUser.getValue().getUID(), extension.getID());
                     Toast.makeText(requireActivity, "创建成功", Toast.LENGTH_SHORT).show();
-                    App.ongoingExtensions.add(extension);
+                    //更新数据
+                    App.mThreadPool.execute(getOngoingExtensions);
+                    App.mThreadPool.execute(getCreatedExtensions);
+                    App.mThreadPool.execute(getOverExtensions);
                 } catch (Exception ex) {
                     Toast.makeText(requireActivity, "创建失败", Toast.LENGTH_SHORT).show();
                     Log.e("error", Objects.requireNonNull(ex.getMessage()));

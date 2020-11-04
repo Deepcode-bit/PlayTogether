@@ -16,7 +16,7 @@ public class ExtensionModel implements Serializable {
     private String location;
     
     public int getNumber() {
-        return number;
+        return Math.max(number, 0);
     }
 
     public void setNumber(int number) {

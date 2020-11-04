@@ -3,7 +3,6 @@ package com.nepu.playtogether;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -11,14 +10,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.util.SparseArray;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -30,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -40,7 +34,6 @@ import fragment.ExtensionFragment;
 import fragment.ForumFragment;
 import fragment.PersonFragment;
 import model.ExtensionModel;
-import model.MessageModel;
 import model.UserModel;
 import util.App;
 import util.Connection;
@@ -91,13 +84,13 @@ public class HostActivity extends AppCompatActivity {
         UserModel user=new Dao(this).getLocalUser();
         App.ongoingExtensions=new ArrayList<>();
         App.createdExtensions=new ArrayList<>();
-        App.joinExtensions=new ArrayList<>();
+        App.overExtensions =new ArrayList<>();
         if(user!=null){
             App.localUser.setValue(user);
             TcpClient.getInstance().startClient(App.IPAddress,App.port);
             App.mThreadPool.execute(getOngoingExtensions);
             App.mThreadPool.execute(getCreatedExtensions);
-            App.mThreadPool.execute(getJoinExtensions);
+            App.mThreadPool.execute(getOverExtensions);
             App.mThreadPool.execute(getHeadImage);
         }
         App.messages=new ArrayList<>();
@@ -175,11 +168,11 @@ public class HostActivity extends AppCompatActivity {
     };
 
 
-    public static Runnable getJoinExtensions=new Runnable() {
+    public static Runnable getOverExtensions =new Runnable() {
         @Override
         public void run() {
             UserModel user = App.localUser.getValue();
-            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getJoinByUid/" + user.getUID());
+            JSONObject resultJson = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/extension/getOverExtension/" + user.getUID());
             if (resultJson == null) return;
             try {
                 Gson gson = new Gson();
@@ -193,7 +186,7 @@ public class HostActivity extends AppCompatActivity {
                     extensionModels.add(extension);
                 }
                 //设置数据源
-                App.joinExtensions = extensionModels;
+                App.overExtensions = extensionModels;
                 if (App.localUser.getValue() != null)
                     App.localUser.getValue().setJoinNum(extensionModels.size());
             } catch (JSONException e) {

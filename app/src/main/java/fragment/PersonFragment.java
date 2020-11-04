@@ -2,13 +2,9 @@ package fragment;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -16,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -30,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -49,6 +43,9 @@ import java.util.Objects;
 
 import com.nepu.playtogether.CertificationActivity;
 
+import org.json.JSONObject;
+
+import model.UserCredit;
 import model.UserModel;
 import util.App;
 import util.Connection;
@@ -101,7 +98,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
         handler = new MyHandler(this);
         mViewModel.underNum.setValue(App.ongoingExtensions.size());
         mViewModel.createNum.setValue(App.createdExtensions.size());
-        mViewModel.joinNum.setValue(App.joinExtensions.size());
+        mViewModel.overNum.setValue(App.overExtensions.size());
     }
 
     /*
@@ -129,7 +126,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
                     }
                     mViewModel.userName.setValue(user.getUserName());
                     mViewModel.verify.setValue((App.getStateType(user.getUserState())));
-                    mViewModel.joinNum.setValue(user.getJoinNum());
+                    mViewModel.overNum.setValue(user.getJoinNum());
                     mViewModel.createNum.setValue(user.getCreateNum());
                     headView = requireView().findViewById(R.id.image_head);
                     if (App.headImage != null)
@@ -137,7 +134,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
                 } else {
                     mViewModel.userName.setValue("登录/注册");
                     mViewModel.verify.setValue(null);
-                    mViewModel.joinNum.setValue(0);
+                    mViewModel.overNum.setValue(0);
                     mViewModel.createNum.setValue(0);
                 }
             }
@@ -208,6 +205,35 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
+    public void onCreditClick(View v){
+        App.mThreadPool.execute(new Runnable() {
+            UserCredit credit=null;
+            @Override
+            public void run() {
+                try {
+                    JSONObject json = Connection.getJson(App.get, App.netUrl, new HashMap<String, String>(), "/credit/getOne/" + App.localUser.getValue().getUID());
+                    if (json != null) {
+                        credit = new Gson().fromJson(json.get("data").toString(), UserCredit.class);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                requireView().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (credit == null || credit.getCredit() == 0) {
+                            Toast.makeText(requireActivity(), "加载失败", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        AlertDialog.Builder dialog;
+                        dialog = new AlertDialog.Builder(getActivity(), R.style.AlertDialogBackground).setTitle("提示").setMessage("我的信誉积分:" + credit.getCredit());
+                        dialog.show();
+                    }
+                });
+            }
+        });
+    }
+
     private void LogIn(){
         Intent intent=new Intent();
         intent.setClass(requireActivity(), MainActivity.class);
@@ -256,7 +282,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
         String type = "";
         switch (v.getId()) {
             case R.id.join_list:
-                type = "join";
+                type = "over";
                 break;
             case R.id.create_list:
                 type = "create";
@@ -327,16 +353,6 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
         }
         Intent intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//        // 获取文件
-//        File file = createFileIfNeed();
-//        //拍照后原图回存入此路径下
-//        Uri uri;
-//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-//            uri = Uri.fromFile(file);
-//        } else {
-//            uri = FileProvider.getUriForFile(requireActivity(), "com.example.bobo.getphotodemo.fileprovider", file);
-//        }
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
         requireActivity().startActivityForResult(intent, 1);
     }
@@ -365,16 +381,14 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-            switch (msg.what) {
-                case notify:
-                    String message = msg.getData().getString("msg");
-                    String url=msg.getData().getString("url");
-                    if (url!=null){
-                        App.localUser.getValue().setHeadImage(url);
-                        App.mThreadPool.execute(personFragment.get().saveUser);
-                    }
-                    Toast.makeText(personFragment.get().requireActivity(), message, Toast.LENGTH_SHORT).show();
-                    break;
+            if (msg.what == notify) {
+                String message = msg.getData().getString("msg");
+                String url = msg.getData().getString("url");
+                if (url != null) {
+                    App.localUser.getValue().setHeadImage(url);
+                    App.mThreadPool.execute(personFragment.get().saveUser);
+                }
+                Toast.makeText(personFragment.get().requireActivity(), message, Toast.LENGTH_SHORT).show();
             }
         }
     }

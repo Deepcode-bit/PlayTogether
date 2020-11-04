@@ -186,6 +186,7 @@ public class Connection {
                     break;
                 }
             }
+            return null;
         }
         return null;
     }

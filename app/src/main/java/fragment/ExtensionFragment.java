@@ -1,10 +1,8 @@
 package fragment;
 import android.content.Intent;
-import android.database.Observable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.nepu.playtogether.ChatRoomActivity;
 import com.nepu.playtogether.ExtensionActivity;
 import com.nepu.playtogether.HostActivity;
 import com.nepu.playtogether.PublicActivity;
@@ -30,9 +25,7 @@ import com.nepu.playtogether.R;
 import com.nepu.playtogether.databinding.FragmentExtensionBinding;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+
 import model.ExtensionModel;
 import util.App;
 import adapter.MAdapter;
@@ -243,7 +236,7 @@ public class ExtensionFragment extends Fragment implements SwipeRefreshLayout.On
                 case personalDataChange:
                     extensionFragment.get().mViewModel.underNum.setValue(App.ongoingExtensions.size());
                     extensionFragment.get().mViewModel.createNum.setValue(App.createdExtensions.size());
-                    extensionFragment.get().mViewModel.joinNum.setValue(App.joinExtensions.size());
+                    extensionFragment.get().mViewModel.overNum.setValue(App.overExtensions.size());
                     break;
                 default:break;
             }

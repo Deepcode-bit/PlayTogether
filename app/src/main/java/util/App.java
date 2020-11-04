@@ -34,8 +34,8 @@ public class App extends Application {
     public static MutableLiveData<UserModel> localUser=new MutableLiveData<>();
     //正在进行的活动(参加)
     public static List<ExtensionModel> ongoingExtensions;
-    //参加的活动
-    public static List<ExtensionModel> joinExtensions;
+    //结束的活动
+    public static List<ExtensionModel> overExtensions;
     //创建的活动
     public static List<ExtensionModel> createdExtensions;
     //消息集合

@@ -8,13 +8,13 @@
     android:layout_height="match_parent"
     android:background="@color/bg_gray"
     tools:context=".ChatRoomActivity">
-<LinearLayout
+<RelativeLayout
     android:id="@+id/title2"
     android:background="#fff"
     android:layout_height="50dp"
-    android:gravity="center"
     android:layout_width="match_parent">
     <TextView
+        android:layout_centerInParent="true"
         android:id="@+id/title3"
         android:textSize="20sp"
         android:textColor="#000"
@@ -22,7 +22,15 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"/>
-</LinearLayout>
+    <ImageView
+        android:onClick="onMoreButClick"
+        android:layout_marginEnd="10dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_format_list_bulleted_black_24dp"
+        android:layout_height="30dp"
+        android:layout_width="30dp"/>
+</RelativeLayout>
     <LinearLayout
         android:layout_height="0dp"
         android:layout_weight="1"

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/rippler_white"
+    android:clickable="true"
+    android:layout_marginBottom="10dp"
+    android:orientation="horizontal"
+    android:focusable="true">
+
+<LinearLayout
+    android:gravity="center"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+        app:qmui_corner_radius="50dp"
+        android:id="@+id/member_head"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/head" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:layout_weight="4"
+        android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/member_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="包小包"
+                android:textColor="#000"
+                android:textSize="20sp" />
+        <LinearLayout
+            android:gravity="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="发起人"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/creator_credit"
+                android:background="@drawable/colorful_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="信誉积分:"
+                android:textColor="#fff"
+                android:textSize="16sp" />
+        </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

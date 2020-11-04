@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,10 +33,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 import adapter.MemberAdapter;
-import fragment.ExtensionFragment;
 import model.ExtensionModel;
 import model.Member;
 import model.MessageModel;
+import model.UserCredit;
 import model.UserModel;
 import util.App;
 import util.Connection;
@@ -45,7 +44,7 @@ import util.HandlerMsg;
 import util.TcpClient;
 
 import static com.nepu.playtogether.HostActivity.getCreatedExtensions;
-import static com.nepu.playtogether.HostActivity.getJoinExtensions;
+import static com.nepu.playtogether.HostActivity.getOverExtensions;
 import static com.nepu.playtogether.HostActivity.getOngoingExtensions;
 
 public class ExtensionActivity extends AppCompatActivity implements MemberAdapter.onItemClickListener {
@@ -116,11 +115,10 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
         handler=new MyHandler(this);
         members=new ArrayList<>();
         App.mThreadPool.execute(getMembers);
-        memberAdapter=new MemberAdapter();
+        memberAdapter=new MemberAdapter(members,extension.getValue().getUID());
         memberRecycler=findViewById(R.id.member_list);
         memberRecycler.setLayoutManager(new LinearLayoutManager(this));
         memberRecycler.setAdapter(memberAdapter);
-        memberAdapter.setMembers(members);
         memberAdapter.notifyDataSetChanged();
         memberAdapter.setOnItemClickListener(this);
     }
@@ -202,8 +200,8 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
             final String eid = String.valueOf(extension.getValue().getID());
             try {
                 HashMap<String, String> params = new HashMap<>();
-                JSONObject json = Connection.getJson(App.post, App.netUrl, params, "/extension/over/" + eid);
-                if (json == null || !json.get("msg").equals("取消成功")) {
+                JSONObject json = Connection.getJson(App.post, App.netUrl, params, "/extension/delete/" + eid);
+                if (json == null || !json.get("msg").equals("删除成功")) {
                     Bundle bundle=new Bundle();
                     bundle.putString("error","取消失败");
                     Message msg = HandlerMsg.getMsg(MyHandler.notifyError, bundle);
@@ -263,6 +261,12 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     UserModel userModel = gson.fromJson(jsonObject.toString(), UserModel.class);
                     userModels.add(userModel);
+                }
+                JSONObject json = Connection.getJson(App.get,App.netUrl,new HashMap<String, String>(),"/credit/getOne/"+extension.getValue().getUID());
+                if(json!=null) {
+                    UserCredit credit = new Gson().fromJson(json.get("data").toString(), UserCredit.class);
+                    if (credit != null)
+                        memberAdapter.setCredit(credit.getCredit());
                 }
                 members.clear();
                 for(UserModel user: userModels){
@@ -345,7 +349,7 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                         //更新数据
                         App.mThreadPool.execute(getOngoingExtensions);
                         App.mThreadPool.execute(getCreatedExtensions);
-                        App.mThreadPool.execute(getJoinExtensions);
+                        App.mThreadPool.execute(getOverExtensions);
                     }catch (Exception ex){
                         Toast.makeText(extensionActivity.get(), "退出失败", Toast.LENGTH_SHORT).show();
                     }
@@ -358,6 +362,10 @@ public class ExtensionActivity extends AppCompatActivity implements MemberAdapte
                     try {
                         //本地操作
                         TcpClient.getInstance().cancelExtension(extensionActivity.get().extension.getValue().getID());
+                        //更新数据
+                        App.mThreadPool.execute(getOngoingExtensions);
+                        App.mThreadPool.execute(getCreatedExtensions);
+                        App.mThreadPool.execute(getOverExtensions);
                         Toast.makeText(extensionActivity.get(),"已取消",Toast.LENGTH_SHORT).show();
                         extensionActivity.get().finish();
                     } catch (JSONException e) {
